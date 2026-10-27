@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px #0D1117 inset;
+  -webkit-text-fill-color: #E6EDF3;
+  /* border-color: rgba(255, 255, 255, 0.1) !important; */
+}
+
+body {
+  background-color: #0D1117;
+  /* brand-dark */
+  color: #E6EDF3;
+  /* brand-light */
+}
+
+/* Style for the hero background image */
+#hero {
+  /* background-image: url('https://images.unsplash.com/photo-1620121692029-d088224ddc74?q=80&w=2400&auto=format&fit=crop'); */
+  /* background-image: url('/images/hero/gradient_03.gif'); */
+  /* background-size: cover;
+  background-position: center; */
+}
+
+#hero video::-webkit-media-controls {
+  display: none !important;
+  -webkit-appearance: none;
+}
+
+#hero h1 {
+  white-space: nowrap;
+}
+
+.hero-overlay {
+  background-color: rgba(13, 17, 23, 0.5);
+  /* brand-dark with 70% opacity */
+}
+
+.scroll-down-indicator {
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+
+  40% {
+    transform: translateY(-20px);
+  }
+
+  60% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Style for text animation */
+.hero-title span,
+.hero-logo-animated,
+.hero-button-animated {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: reveal-up 0.6s forwards cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slider-item {
+  transition: opacity 0.5s ease-in-out;
+}
+
+.slider-dot {
+  transition: background-color 0.3s ease;
+}
+
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+
+.fade-in.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Ab md: Verzögerung pro Element */
+@media (min-width: 768px) {
+  .fade-in.is-visible:nth-child(1) {
+    transition-delay: 0
+  }
+
+  .fade-in.is-visible:nth-child(2) {
+    transition-delay: 0.15s;
+  }
+
+  .fade-in.is-visible:nth-child(3) {
+    transition-delay: 0.3s;
+  }
+
+  .fade-in.is-visible:nth-child(4) {
+    transition-delay: 0.45s;
+  }
+
+  .fade-in.is-visible:nth-child(5) {
+    transition-delay: 0.6s;
+  }
+
+  .fade-in.is-visible:nth-child(6) {
+    transition-delay: 0.75s;
+  }
+}
