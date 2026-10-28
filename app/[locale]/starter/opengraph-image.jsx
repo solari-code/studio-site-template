@@ -1,9 +1,19 @@
 import { ImageResponse } from "next/og";
+import { getTranslations } from "next-intl/server";
+import { routing } from "@/i18n/routing";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function Image() {
+// Prerender the image once per language.
+export function generateStaticParams() {
+    return routing.locales.map((locale) => ({ locale }));
+}
+
+export default async function Image({ params }) {
+    const { locale } = await params;
+    const t = await getTranslations({ locale, namespace: "Starter.OgImage" });
+
     return new ImageResponse(
         (
             <div
@@ -52,7 +62,7 @@ export default function Image() {
                         marginBottom: "32px",
                     }}
                 >
-                    ⚡ Starter Package
+                    {t("badge")}
                 </div>
 
                 {/* Heading */}
@@ -68,7 +78,7 @@ export default function Image() {
                         display: "flex",
                     }}
                 >
-                    Your Website.
+                    {t("line1")}
                 </div>
                 <div
                     style={{
@@ -83,7 +93,7 @@ export default function Image() {
                         display: "flex",
                     }}
                 >
-                    Online in One Week.
+                    {t("line2")}
                 </div>
             </div>
         ),

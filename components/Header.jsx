@@ -1,9 +1,14 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import Logo from './Logo';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const Header = () => {
+    const t = useTranslations('Nav');
+    const tHeader = useTranslations('Header');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
 
@@ -33,12 +38,13 @@ const Header = () => {
         setIsMenuOpen(false);
     };
 
+    // Section anchors on the homepage; `Link` adds the language prefix automatically.
     const navLinks = [
-        { href: "/#services", text: "Services" },
-        { href: "/#work", text: "Work" },
-        { href: "/#process", text: "Process" },
-        { href: "/#about", text: "About" },
-        { href: "/#contact", text: "Contact" },
+        { href: "/#services", text: t('services') },
+        { href: "/#work", text: t('work') },
+        { href: "/#process", text: t('process') },
+        { href: "/#about", text: t('about') },
+        { href: "/#contact", text: t('contact') },
     ];
 
     return (
@@ -46,22 +52,23 @@ const Header = () => {
             <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${isScrolled || isMenuOpen ? 'bg-brand-dark/70 backdrop-blur-lg border-white/10' : 'bg-transparent border-transparent'}`}>
                 <div className="container mx-auto px-6 py-4">
                     <div className="flex justify-between items-center">
-                        <a href="/#" className="flex items-center space-x-3" onClick={() => isMenuOpen && setIsMenuOpen(false)}>
+                        <Link href="/" className="flex items-center space-x-3" onClick={() => isMenuOpen && setIsMenuOpen(false)}>
                             <Logo className="h-8 w-auto text-white" />
-                        </a>
+                        </Link>
 
                         {/* Desktop Navigation */}
                         <nav className="hidden md:flex items-center space-x-8">
                             {navLinks.map((link) => (
-                                <a key={link.href} href={link.href} className="text-brand-light hover:text-brand-magenta transition-colors duration-300">
+                                <Link key={link.href} href={link.href} className="text-brand-light hover:text-brand-magenta transition-colors duration-300">
                                     {link.text}
-                                </a>
+                                </Link>
                             ))}
+                            <LanguageSwitcher variant="compact" className="ml-2" />
                         </nav>
 
                         {/* Mobile Menu Button */}
                         <div className="md:hidden">
-                            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="z-50 text-brand-light focus:outline-none">
+                            <button onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label={isMenuOpen ? tHeader('closeMenu') : tHeader('openMenu')} aria-expanded={isMenuOpen} className="z-50 text-brand-light focus:outline-none">
                                 {isMenuOpen ? (
                                     // Close (X) icon
                                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -83,7 +90,7 @@ const Header = () => {
             <div className={`md:hidden fixed inset-0 z-40 bg-brand-dark/95 backdrop-blur-xl transition-opacity duration-300 ease-in-out ${isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                 <nav className="flex flex-col items-center justify-center h-full text-center">
                     {navLinks.map((link, index) => (
-                        <a
+                        <Link
                             key={link.href}
                             href={link.href}
                             onClick={handleLinkClick}
@@ -91,8 +98,14 @@ const Header = () => {
                             style={{ transitionDelay: `${150 + index * 75}ms` }}
                         >
                             {link.text}
-                        </a>
+                        </Link>
                     ))}
+                    <div
+                        className={`mt-8 transition-all duration-500 ease-out ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+                        style={{ transitionDelay: `${150 + navLinks.length * 75}ms` }}
+                    >
+                        <LanguageSwitcher variant="menu" />
+                    </div>
                 </nav>
             </div>
         </>

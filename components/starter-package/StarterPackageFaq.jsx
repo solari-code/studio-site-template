@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { Plus, Minus } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const StarterPackageFaq = function () {
+    const t = useTranslations('Starter.Faq');
 
     const [openFaq, setOpenFaq] = useState(null);
 
@@ -11,37 +13,17 @@ const StarterPackageFaq = function () {
         setOpenFaq(openFaq === index ? null : index);
     };
 
-    const faqs = [
-        {
-            question: "What do I get for 499€?",
-            answer: "A one-page landing page built with Next.js: design, development, basic search engine setup, a contact form that emails you, plus your domain and 12 months of hosting. One fixed price, no hidden extras."
-        },
-        {
-            question: "How does the one-week timeline work?",
-            answer: "After a short intro call you get an onboarding form for your texts, logo, colors and examples you like. The week starts once everything is in. You get a first version to review, one round of changes is included, and the site goes live right after. You pay half up front and the rest at launch."
-        },
-        {
-            question: "What do I need to prepare?",
-            answer: "Your logo, the texts for each section, your brand colors and a few websites you like. The more complete your input, the faster things move. Need help with texts or a logo? That's available as an extra."
-        },
-        {
-            question: "What happens after the first year?",
-            answer: "You choose: keep a small yearly care plan that covers hosting, domain renewal and small updates, or take over hosting and domain yourself and get the full project handed over."
-        },
-        {
-            question: "Can the site be changed after launch?",
-            answer: "Small text changes during the first year are included. Bigger changes, like new sections or features, are quoted separately."
-        }
-    ];
+    // Questions and answers live in messages under `Starter.Faq.items`; add or remove entries there.
+    const faqs = t.raw('items');
 
     return (
         <section id="faq" className="py-20 lg:py-28 px-6 border-t border-white/5 bg-brand-dark">
             <div className="container mx-auto max-w-4xl">
                 <div className="text-center mb-16">
                     <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
-                        Frequently Asked <span className="bg-gradient-to-r from-brand-magenta to-pink-500 text-transparent bg-clip-text">Questions</span>
+                        {t.rich('title', { highlight: (chunks) => <span className="bg-gradient-to-r from-brand-magenta to-pink-500 text-transparent bg-clip-text">{chunks}</span> })}
                     </h2>
-                    <p className="text-gray-400">Quick answers before you get in touch.</p>
+                    <p className="text-gray-400">{t('subtitle')}</p>
                 </div>
 
                 <div className="space-y-4">
@@ -52,6 +34,7 @@ const StarterPackageFaq = function () {
                         >
                             <button
                                 onClick={() => toggleFaq(index)}
+                                aria-expanded={openFaq === index}
                                 className="w-full flex items-center justify-between p-6 text-left focus:outline-none"
                             >
                                 <span className={`font-bold transition-colors ${openFaq === index ? 'text-cyan-400' : 'text-white'}`}>

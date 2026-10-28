@@ -1,23 +1,27 @@
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import Logo from './Logo';
+import LanguageSwitcher from './LanguageSwitcher';
 import { siteConfig } from '@/config/site';
 
 const Footer = () => {
+    const t = useTranslations('Footer');
+    const tNav = useTranslations('Nav');
 
     const year = new Date().getFullYear();
 
     return (
         <footer className="bg-brand-dark text-white border-t border-white/10">
             <div className="container mx-auto px-6 py-16 text-center">
-                <a href="/#" className="inline-block mb-8">
+                <Link href="/" className="inline-block mb-8">
                     <Logo className="h-16 w-auto text-white" />
-                </a>
+                </Link>
                 <div className="flex justify-center space-x-6 mb-8">
-                    <a href="#services" className="text-brand-gray hover:text-white transition-colors">Services</a>
-                    <a href="#work" className="text-brand-gray hover:text-white transition-colors">Work</a>
-                    <a href="#process" className="text-brand-gray hover:text-white transition-colors">Process</a>
-                    <a href="#about" className="text-brand-gray hover:text-white transition-colors">About</a>
-                    {/* <a href="#lab" className="text-brand-gray hover:text-white transition-colors">Lab</a> */}
-                    {/* <a href="#contact" className="text-brand-gray hover:text-white transition-colors">Contact</a> */}
+                    <Link href="/#services" className="text-brand-gray hover:text-white transition-colors">{tNav('services')}</Link>
+                    <Link href="/#work" className="text-brand-gray hover:text-white transition-colors">{tNav('work')}</Link>
+                    <Link href="/#process" className="text-brand-gray hover:text-white transition-colors">{tNav('process')}</Link>
+                    <Link href="/#about" className="text-brand-gray hover:text-white transition-colors">{tNav('about')}</Link>
+                    {/* <Link href="/#contact" className="text-brand-gray hover:text-white transition-colors">{tNav('contact')}</Link> */}
                 </div>
                 <div className="flex justify-center space-x-6 mb-8">
                     <a target='_blank' href={siteConfig.social.linkedin} aria-label="LinkedIn" className="text-brand-gray hover:text-white transition-colors">
@@ -33,9 +37,10 @@ const Footer = () => {
                 <div className="text-brand-gray text-sm space-y-1">
                     <p><a href={`mailto:${siteConfig.contact.email}`} className="hover:text-white transition-colors">{siteConfig.contact.email}</a></p>
                     <div className="flex justify-center space-x-4">
-                        <a href="/impressum" className="hover:text-white transition-colors">Impressum</a>
-                        <a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a>
+                        <Link href="/impressum" className="hover:text-white transition-colors">{t('impressum')}</Link>
+                        <Link href="/privacy" className="hover:text-white transition-colors">{t('privacy')}</Link>
                     </div>
+                    <LanguageSwitcher variant="links" />
                     <p>&copy; {year} {siteConfig.name}</p>
                 </div>
             </div>

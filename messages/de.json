@@ -1,0 +1,437 @@
+{
+    "Metadata": {
+        "Home": {
+            "title": "{name} | Studio für Webdesign & Entwicklung",
+            "description": "Ein unabhängiges Studio für Webdesign & Entwicklung. Websites, Shops und Web-Apps für kleine Unternehmen – von der ersten Landingpage bis zum fertigen Produkt.",
+            "ogTitle": "{name} | Ideen, die bleiben",
+            "ogImageAlt": "Abstrakter Hintergrund mit dem {name}-Logo",
+            "keywords": [
+                "Webentwicklung",
+                "App-Entwicklung",
+                "SaaS",
+                "UI/UX Design",
+                "Grafikdesign",
+                "React",
+                "Next.js",
+                "Digitalstudio",
+                "Webdesign"
+            ]
+        },
+        "Starter": {
+            "title": "Starterpaket — Eine professionelle Landingpage in einer Woche",
+            "description": "Eine klare, schnelle Landingpage – gestaltet, gebaut und online in etwa einer Woche. Festpreis 499 €, Domain und Hosting im ersten Jahr inklusive."
+        },
+        "Impressum": {
+            "title": "Impressum",
+            "description": "Impressum von {name}: Anbieterangaben, Kontakt und Haftungshinweise."
+        },
+        "Privacy": {
+            "title": "Datenschutzerklärung",
+            "description": "Wie {name} auf dieser Website mit personenbezogenen Daten umgeht: Server-Logs, Kontaktformular und Ihre Rechte."
+        }
+    },
+    "Logo": {
+        "label": "{name}-Logo"
+    },
+    "Nav": {
+        "services": "Leistungen",
+        "work": "Projekte",
+        "process": "Ablauf",
+        "about": "Über mich",
+        "contact": "Kontakt"
+    },
+    "Header": {
+        "openMenu": "Menü öffnen",
+        "closeMenu": "Menü schließen"
+    },
+    "Footer": {
+        "impressum": "Impressum",
+        "privacy": "Datenschutz"
+    },
+    "LanguageSwitcher": {
+        "label": "Sprache"
+    },
+    "Hero": {
+        "title": "ideen, die bleiben.",
+        "cta": "Schau dich um",
+        "backgroundAlt": "Hero-Hintergrund"
+    },
+    "Intro": {
+        "title": "Hallo. Das ist <brand>{name}</brand>.<br></br>Ein unabhängiges Studio für Webdesign & Entwicklung.",
+        "subtitle": "Ich helfe kleinen Unternehmen, online gut auszusehen und gut zu funktionieren.<br></br>Von der ersten Landingpage bis zur kompletten Web-App."
+    },
+    "Services": {
+        "title": "Leistungen",
+        "subtitle": "Alles, was du brauchst, um online zu gehen – und online zu bleiben.",
+        "items": {
+            "websites": {
+                "title": "Websites & Shops",
+                "description": "Schnelle, barrierearme Websites und Onlineshops, die aus Besuchern Kunden machen."
+            },
+            "webApps": {
+                "title": "Web-Apps",
+                "description": "Du hast eine Produktidee? Ich helfe dir, eine Web-App zu planen, zu bauen und zu launchen, die mit dir wächst."
+            },
+            "automation": {
+                "title": "Automatisierung",
+                "description": "Kleine Tools und Workflows, die dir wiederkehrende Aufgaben abnehmen und zu deiner Arbeitsweise passen."
+            },
+            "design": {
+                "title": "Brand- & Interface-Design",
+                "description": "Logos, Interfaces und Visuals, die deinem Unternehmen ein klares, wiedererkennbares Gesicht geben."
+            }
+        },
+        "starterCta": {
+            "badge": "Starterpaket",
+            "title": "Bald <highlight>am Start?</highlight>",
+            "subtitle": "In etwa einer Woche online.",
+            "price": "499 €",
+            "priceLabel": "Festpreis",
+            "cta": "Zum Starterpaket"
+        }
+    },
+    "Work": {
+        "title": "Aktuelle <highlight>Projekte</highlight>",
+        "subtitle": "Ein paar Projekte, die ich von der ersten Skizze bis zum Launch begleitet habe.",
+        "viewLive": "Live ansehen",
+        "viewGithub": "Auf GitHub ansehen",
+        "previous": "Vorheriges Projekt",
+        "next": "Nächstes Projekt",
+        "goTo": "Projekt {number} anzeigen",
+        "projects": {
+            "widgets": {
+                "title": "Empfehlungs-Widgets",
+                "description": "Eine Open-Source-React-Bibliothek, mit der Onlineshops personalisierte Produktempfehlungen mit nur wenigen Komponenten auf jeder Seite einbauen können.",
+                "tags": [
+                    "Open Source",
+                    "React",
+                    "TypeScript",
+                    "E-Commerce",
+                    "Developer-Tools"
+                ]
+            },
+            "ceramics": {
+                "title": "Keramik-Portfolio",
+                "description": "Ein ruhiges, bildstarkes Portfolio für eine Keramikkünstlerin, mit filterbarer Galerie und einfachem Anfrageformular.",
+                "tags": [
+                    "Portfolio-Website",
+                    "Next.js",
+                    "Responsive Design",
+                    "Kontaktformular",
+                    "SEO"
+                ]
+            },
+            "roastery": {
+                "title": "Shop für eine Kaffeerösterei",
+                "description": "Ein maßgeschneiderter Onlineshop für eine kleine Kaffeerösterei, mit Abos, Produktfinder und eigens für die Marke gezeichneten Illustrationen.",
+                "tags": [
+                    "Individueller Onlineshop",
+                    "Full-Stack-Entwicklung",
+                    "Illustration",
+                    "Stripe-Integration",
+                    "Next.js"
+                ],
+                "quote": "„Die Zusammenarbeit mit {name} war von Anfang bis Ende unkompliziert. Unser neuer Shop sieht aus wie wir, und unsere Stammkunden bestellen jetzt tatsächlich gern online.“",
+                "client": "Sam Rivera, Inhaber einer Beispiel-Rösterei"
+            },
+            "yoga": {
+                "title": "Launch eines Yoga-Kurses",
+                "description": "Landingpage und Checkout für einen Online-Yoga-Kurs, mit sicherer Bezahlung und automatischer Zustellung der Kursunterlagen nach dem Kauf.",
+                "tags": [
+                    "Landingpage-Design",
+                    "Digitale Produkte",
+                    "Stripe-Integration",
+                    "E-Mail-Automatisierung",
+                    "Next.js"
+                ]
+            }
+        }
+    },
+    "Process": {
+        "title": "Der <highlight>Ablauf</highlight>",
+        "subtitle": "Vier Schritte, kein Rätselraten.",
+        "steps": {
+            "discover": {
+                "title": "Verstehen",
+                "description": "Wir starten mit einem Gespräch über deine Ziele, deine Zielgruppe und dein Budget. So sind wir uns einig, was gebaut wird, bevor etwas gebaut wird."
+            },
+            "design": {
+                "title": "Gestalten",
+                "description": "Ich skizziere Struktur und Look der Seite, und wir feilen gemeinsam daran, bis es zu deiner Marke passt."
+            },
+            "develop": {
+                "title": "Entwickeln",
+                "description": "Ich setze alles mit sauberem, wartbarem Code um und zeige dir den Fortschritt unterwegs. So gibt es keine Überraschungen."
+            },
+            "deploy": {
+                "title": "Launchen",
+                "description": "Ich kümmere mich um Hosting und Launch, prüfe, dass alles rund läuft, und bleibe danach für Updates erreichbar."
+            }
+        }
+    },
+    "Lab": {
+        "title": "Aus dem <highlight>Labor</highlight>",
+        "text": "Nebenprojekte und Experimente: Hier probiere ich neue Tools und Ideen aus, bevor sie in Kundenprojekten landen.",
+        "cta": "Zu den Experimenten"
+    },
+    "About": {
+        "title": "Mit <highlight>Sorgfalt</highlight> gebaut, mit <highlightAlt>Absicht</highlightAlt> gestaltet.",
+        "text": "Hi, ich bin Alex, die Person hinter {name}. Seit Jahren baue ich Websites und Web-Apps für kleine Unternehmen und unabhängige Kreative. Mir sind die Details wichtig: Seiten, die schnell laden, klar lesbar sind und sich leicht aktualisieren lassen. Mein Ziel ist eine Website, die du gern teilst – und die auch lange nach dem Launch noch funktioniert.",
+        "portraitAlt": "Porträt des Gründers"
+    },
+    "Contact": {
+        "title": "Du hast ein Projekt im Kopf? <highlight>Lass uns reden</highlight>.",
+        "text": "Erzähl mir kurz, was du brauchst.<br></br>Ich antworte meist innerhalb von zwei Werktagen.",
+        "cta": "Schreib mir"
+    },
+    "ContactForm": {
+        "title": "Sag <highlight>Hallo</highlight>",
+        "intro": "Hinterlass mir eine kurze Nachricht, ich melde mich bald.",
+        "close": "Schließen",
+        "name": "Name",
+        "email": "E-Mail",
+        "message": "Deine Nachricht",
+        "website": "Website",
+        "send": "Nachricht senden",
+        "sending": "Wird gesendet…",
+        "or": "ODER",
+        "whatsapp": "Per WhatsApp schreiben",
+        "successTitle": "Danke!",
+        "success": "Nachricht gesendet! Ich melde mich bald bei dir.",
+        "errors": {
+            "MISSING_FIELDS": "Bitte fülle alle Felder aus.",
+            "SEND_FAILED": "Da ist leider etwas schiefgelaufen. Bitte versuch es noch einmal.",
+            "UNEXPECTED": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuch es später noch einmal."
+        }
+    },
+    "Starter": {
+        "Hero": {
+            "badge": "Starterpaket",
+            "title": "Deine Website.<br></br><highlight>Online in einer Woche.</highlight>",
+            "subtitle": "Eine fokussierte Landingpage, für dich gestaltet und gebaut – bereit zum Teilen.",
+            "cta": "Platz anfragen"
+        },
+        "WhoIsThisFor": {
+            "title": "Das Richtige für dich, <highlight>wenn …</highlight>",
+            "subtitle": "Gemacht für kleine Unternehmen und Solo-Gründer, die eine solide Landingpage wollen – ohne monatelanges Projekt.",
+            "criteria": {
+                "firstWebsite": {
+                    "title": "Erste Website",
+                    "text": "Du bist bereit für ein richtiges Zuhause im Netz für dein Business."
+                },
+                "oneOffer": {
+                    "title": "Ein klares Angebot",
+                    "text": "Du hast eine Hauptleistung oder ein Produkt und willst es gut präsentieren."
+                },
+                "shortTimeline": {
+                    "title": "Kurzer Zeitrahmen",
+                    "text": "Du willst lieber diesen Monat live gehen, als die nächsten sechs zu planen."
+                },
+                "directContact": {
+                    "title": "Direkter Kontakt",
+                    "text": "Du sprichst mit der Person, die deine Seite baut – nicht mit einer Kette von Projektmanagern."
+                },
+                "detail": {
+                    "title": "Liebe zum Detail",
+                    "text": "Du willst eine Seite, die poliert aussieht und zuverlässig funktioniert."
+                },
+                "contentReady": {
+                    "title": "Inhalte parat",
+                    "text": "Du weißt ungefähr, was du sagen willst, und brauchst jemanden, der daraus eine Website macht."
+                }
+            },
+            "note": "Schnell, klar und leicht zu aktualisieren"
+        },
+        "Pricing": {
+            "title": "Klare Schritte.<br></br><highlight>Kein Hin und Her.</highlight>",
+            "text": "Ein kurzer Call, ein Onboarding-Formular, ein Zahlungslink. Sobald deine Inhalte da sind, fange ich an zu bauen – und du siehst die erste Version innerhalb weniger Tage.",
+            "cards": {
+                "payment": {
+                    "title": "Einfache Bezahlung",
+                    "text": "Sicher online bezahlen: die Hälfte zum Start, der Rest, wenn deine Seite live geht."
+                },
+                "revision": {
+                    "title": "Eine Korrekturrunde",
+                    "text": "Nach der ersten Version soll noch etwas angepasst werden? Eine Korrekturrunde ist im Paket enthalten."
+                },
+                "form": {
+                    "title": "Ein kurzes Formular",
+                    "text": "Texte, Logo und Farben teilst du in einem einzigen geführten Formular – das war's."
+                }
+            },
+            "badge": "Starterpaket",
+            "price": "499 €",
+            "priceLabel": "Festpreis",
+            "priceNote": "Hosting & Domain im ersten Jahr",
+            "features": [
+                "One-Page-Landingpage (Next.js)",
+                "Schnelle Ladezeiten",
+                "SEO-Grundlagen & Meta-Tags",
+                "Funktioniert auf jeder Bildschirmgröße",
+                "Domain & Hosting für 12 Monate",
+                "Bis zu 5 Abschnitte",
+                "Kontaktformular mit E-Mail-Benachrichtigung",
+                "Optionale Extras auf Anfrage"
+            ],
+            "cta": "Loslegen"
+        },
+        "Roadmap": {
+            "title": "Die <highlight>Roadmap</highlight>",
+            "subtitle": "Von der ersten Nachricht bis zur fertigen Seite.",
+            "steps": {
+                "request": {
+                    "title": "Anfrage",
+                    "text": "Erzähl mir kurz, was du vorhast."
+                },
+                "discovery": {
+                    "title": "Kennenlernen",
+                    "text": "Ein kurzer Call, um die Details zu klären."
+                },
+                "kickoff": {
+                    "title": "Kickoff",
+                    "text": "Onboarding-Formular ausfüllen und Anzahlung leisten."
+                },
+                "launch": {
+                    "title": "Launch",
+                    "text": "Etwa eine Woche später geht deine Seite live."
+                }
+            }
+        },
+        "Faq": {
+            "title": "Häufige <highlight>Fragen</highlight>",
+            "subtitle": "Kurze Antworten, bevor du dich meldest.",
+            "items": [
+                {
+                    "question": "Was bekomme ich für 499 €?",
+                    "answer": "Eine One-Page-Landingpage mit Next.js: Design, Entwicklung, SEO-Grundlagen, ein Kontaktformular, das dir E-Mails schickt, plus deine Domain und 12 Monate Hosting. Ein Festpreis, keine versteckten Extras."
+                },
+                {
+                    "question": "Wie funktioniert der Zeitplan von einer Woche?",
+                    "answer": "Nach einem kurzen Kennenlern-Call bekommst du ein Onboarding-Formular für deine Texte, dein Logo, deine Farben und Beispiele, die dir gefallen. Die Woche startet, sobald alles da ist. Du bekommst eine erste Version zum Prüfen, eine Korrekturrunde ist inklusive, und direkt danach geht die Seite live. Die Hälfte zahlst du vorab, den Rest beim Launch."
+                },
+                {
+                    "question": "Was muss ich vorbereiten?",
+                    "answer": "Dein Logo, die Texte für jeden Abschnitt, deine Markenfarben und ein paar Websites, die dir gefallen. Je vollständiger dein Input, desto schneller geht es. Du brauchst Hilfe bei Texten oder Logo? Das gibt es als Extra."
+                },
+                {
+                    "question": "Was passiert nach dem ersten Jahr?",
+                    "answer": "Du entscheidest: Entweder behältst du ein kleines jährliches Pflegepaket, das Hosting, Domain-Verlängerung und kleine Updates abdeckt – oder du übernimmst Hosting und Domain selbst und bekommst das komplette Projekt übergeben."
+                },
+                {
+                    "question": "Kann die Seite nach dem Launch geändert werden?",
+                    "answer": "Kleine Textänderungen im ersten Jahr sind inklusive. Größere Änderungen wie neue Abschnitte oder Funktionen biete ich separat an."
+                }
+            ]
+        },
+        "Contact": {
+            "title": "Bringen wir dich <highlight>online</highlight>.",
+            "text": "Erzähl mir kurz etwas über dein Business. Wenn das Paket passt, bekommst du die nächsten Schritte per E-Mail.",
+            "successTitle": "Anfrage erhalten",
+            "successText": "Danke! Ich lese deine Nachricht und melde mich mit den nächsten Schritten.",
+            "name": "Name",
+            "namePlaceholder": "Max Mustermann",
+            "email": "E-Mail",
+            "emailPlaceholder": "max@beispiel.de",
+            "message": "Nachricht",
+            "messagePlaceholder": "Was macht dein Business?",
+            "send": "Anfrage senden",
+            "sending": "Wird gesendet…"
+        },
+        "TechSpecs": {
+            "tech": {
+                "label": "Tech",
+                "value": "Next.js / React"
+            },
+            "speed": {
+                "label": "Geschwindigkeit",
+                "value": "Schnell von Haus aus"
+            },
+            "delivery": {
+                "label": "Lieferung",
+                "value": "Etwa eine Woche"
+            },
+            "deployment": {
+                "label": "Deployment",
+                "value": "Hosting & Domain inklusive"
+            }
+        },
+        "OgImage": {
+            "badge": "Starterpaket",
+            "line1": "Deine Website.",
+            "line2": "Online in einer Woche."
+        }
+    },
+    "Legal": {
+        "backHome": "Zur Startseite"
+    },
+    "Impressum": {
+        "title": "Impressum",
+        "note": "",
+        "sections": [
+            {
+                "title": "Angaben gemäß § 5 DDG",
+                "paragraphs": [
+                    "{name}<br></br>Inhaber: Max Mustermann<br></br>Musterstraße 1<br></br>12345 Musterstadt"
+                ]
+            },
+            {
+                "title": "Kontakt",
+                "paragraphs": [
+                    "Telefon: {phone}<br></br>E-Mail: {email}"
+                ]
+            },
+            {
+                "title": "Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV",
+                "paragraphs": [
+                    "Max Mustermann<br></br>Musterstraße 1<br></br>12345 Musterstadt"
+                ]
+            },
+            {
+                "title": "Haftungsausschluss (Disclaimer)",
+                "paragraphs": [
+                    "<strong>Haftung für Inhalte</strong><br></br>Als Diensteanbieter sind wir gemäß § 7 Abs. 1 DDG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 DDG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend entfernen.",
+                    "<strong>Haftung für Links</strong><br></br>Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend entfernen.",
+                    "<strong>Urheberrecht</strong><br></br>Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch gestattet. Soweit die Inhalte auf dieser Seite nicht vom Betreiber erstellt wurden, werden die Urheberrechte Dritter beachtet. Insbesondere werden Inhalte Dritter als solche gekennzeichnet. Sollten Sie trotzdem auf eine Urheberrechtsverletzung aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend entfernen."
+                ]
+            }
+        ]
+    },
+    "Privacy": {
+        "title": "Datenschutzerklärung",
+        "note": "",
+        "sections": [
+            {
+                "title": "1. Datenschutz auf einen Blick",
+                "paragraphs": [
+                    "Der Schutz Ihrer persönlichen Daten ist uns ein wichtiges Anliegen. Diese Datenschutzerklärung erläutert, welche Daten wir erheben, wofür wir sie nutzen und welche Rechte Sie diesbezüglich haben. Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website finden Sie im <impressum>Impressum</impressum>."
+                ]
+            },
+            {
+                "title": "2. Ihre Rechte als Nutzer",
+                "paragraphs": [
+                    "Ihnen stehen im Rahmen der geltenden Datenschutzgesetze (DSGVO) verschiedene Rechte zu. Dazu gehören das Recht auf Auskunft über Ihre von uns verarbeiteten Daten, das Recht auf Berichtigung, Löschung oder Einschränkung der Verarbeitung. Für die Geltendmachung Ihrer Rechte kontaktieren Sie uns bitte über die im Impressum angegebenen Kontaktdaten."
+                ]
+            },
+            {
+                "title": "3. Datenerfassung auf dieser Website",
+                "paragraphs": [
+                    "<strong>Cookies</strong><br></br>Wir respektieren Ihre Privatsphäre. Daher verzichtet diese Website bewusst auf den Einsatz von Cookies, die für Marketing, Analyse oder das Tracking Ihres Surfverhaltens eingesetzt werden. Ein Cookie-Banner ist aus diesem Grund nicht erforderlich.",
+                    "<strong>Server-Log-Dateien</strong><br></br>Unser Hosting-Anbieter erhebt automatisch Daten, die Ihr Browser übermittelt (sog. Server-Log-Dateien), um die Sicherheit und Funktionsfähigkeit der Website zu gewährleisten. Dazu gehören typischerweise IP-Adresse, Browsertyp, Uhrzeit und die aufgerufene Seite. Diese Daten dienen ausschliesslich der technischen Bereitstellung und werden nicht mit anderen Datenquellen zusammengeführt. Rechtsgrundlage hierfür ist unser berechtigtes Interesse (Art. 6 Abs. 1 lit. f DSGVO) an einem sicheren und performanten Webauftritt.",
+                    "<strong>Kontaktformular</strong><br></br>Wenn Sie uns per Kontaktformular kontaktieren, speichern wir Ihre Angaben zur Bearbeitung Ihrer Anfrage und für eventuelle Anschlussfragen. Diese Daten geben wir nicht ohne Ihre Einwilligung weiter. Die Verarbeitung erfolgt zur Erfüllung eines Vertrags oder zur Durchführung vorvertraglicher Maßnahmen (Art. 6 Abs. 1 lit. b DSGVO) oder zur Wahrung unseres berechtigten Interesses an einer effektiven Kommunikation (Art. 6 Abs. 1 lit. f DSGVO)."
+                ]
+            }
+        ],
+        "umami": {
+            "title": "4. Webanalyse mit Umami",
+            "paragraphs": [
+                "Diese Website nutzt Umami, ein datenschutzfreundliches Open-Source-Tool zur Webanalyse. Umami verwendet keine Cookies und erstellt keine Nutzerprofile. IP-Adressen werden nicht gespeichert, und Besucher werden nicht über verschiedene Websites hinweg verfolgt. Erfasst werden lediglich aggregierte Daten wie aufgerufene Seiten, Verweisquelle, Browser, Gerätetyp und ungefähre Herkunft (Land).",
+                "Rechtsgrundlage ist unser berechtigtes Interesse (Art. 6 Abs. 1 lit. f DSGVO) an einer statistischen Auswertung der Nutzung dieser Website, um sie zu verbessern. Da keine Cookies gesetzt und keine personenbezogenen Daten gespeichert werden, ist hierfür keine Einwilligung erforderlich."
+            ]
+        }
+    },
+    "NotFound": {
+        "title": "Seite nicht gefunden",
+        "description": "Diese Seite gibt es nicht oder sie ist umgezogen.",
+        "backHome": "Zur Startseite"
+    }
+}

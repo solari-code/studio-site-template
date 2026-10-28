@@ -5,9 +5,11 @@ import Image from 'next/image';
 import AnimatedCTAButton from './ui/AnimatedButton';
 import { motion } from "framer-motion"
 import { useEffect, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 const Hero = () => {
+    const t = useTranslations('Hero');
 
     const videoRef = useRef(null);
     const [isPosterVisible, setIsPosterVisible] = useState(true);
@@ -38,7 +40,9 @@ const Hero = () => {
 
     }, [videoSrc]);
 
-    const heroText = "ideas, built to last."
+    const heroText = t('title');
+    // Array.from splits by code point, so characters outside the basic plane stay intact
+    const heroChars = Array.from(heroText);
 
     return (
         <section id="hero" className="relative h-screen w-full">
@@ -58,7 +62,7 @@ const Hero = () => {
                 </video>
                 {isPosterVisible && (
                     <Image
-                        alt="hero background"
+                        alt={t('backgroundAlt')}
                         layout="fill"
                         objectFit="cover"
                         priority
@@ -83,7 +87,7 @@ const Hero = () => {
                 </motion.div>
 
                 <h1 className={` hero-title text-3xl md:text-5xl text-white leading-tight`}>
-                    {heroText.split("").map((char, index) => (
+                    {heroChars.map((char, index) => (
                         <motion.p
                             key={index}
                             initial={{ y: 0, opacity: 0 }}
@@ -104,13 +108,13 @@ const Hero = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{
-                        delay: 1.5 + heroText.length * 0.05,
+                        delay: 1.5 + heroChars.length * 0.05,
                         duration: 1,
                         type: "keyframes",
                         stiffness: 150,
                         damping: 25,
                     }}>
-                    <a href="#intro"><AnimatedCTAButton className='font-medium'>Take a look</AnimatedCTAButton></a>
+                    <a href="#intro"><AnimatedCTAButton className='font-medium'>{t('cta')}</AnimatedCTAButton></a>
                 </motion.div>
 
             </div>

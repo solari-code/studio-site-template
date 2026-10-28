@@ -15,7 +15,7 @@ import ContactOverlay from '@/components/ContactOverlay';
 import { useState } from 'react';
 import useScrollFadeIn from '@/hooks/useFadeOnScroll';
 
-export default function Home() {
+export default function HomePage() {
 
   // Contact overlay
   const [overlayIsOpen, setOverlayIsOpen] = useState(false);
