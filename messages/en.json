@@ -38,15 +38,13 @@
         "work": "Work",
         "process": "Process",
         "about": "About",
-        "contact": "Contact"
+        "contact": "Contact",
+        "impressum": "Impressum",
+        "privacy": "Privacy Policy"
     },
     "Header": {
         "openMenu": "Open menu",
         "closeMenu": "Close menu"
-    },
-    "Footer": {
-        "impressum": "Impressum",
-        "privacy": "Privacy Policy"
     },
     "LanguageSwitcher": {
         "label": "Language"

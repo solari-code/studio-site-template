@@ -1,4 +1,3 @@
-import localFont from "next/font/local";
 import "../globals.css";
 import Script from 'next/script';
 import { notFound } from 'next/navigation';
@@ -7,20 +6,16 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { routing } from '@/i18n/routing';
 import { localizedUrl, getOgLocale, getOgAlternateLocales } from '@/i18n/metadata';
 import { siteConfig } from '@/config/site';
-
-// Inter is bundled locally (app/fonts, SIL OFL) so builds don't need to reach Google Fonts.
-const inter = localFont({
-  src: '../fonts/InterVariable-latin.woff2',
-  weight: '100 900',
-  variable: '--font-inter',
-});
+import { pages } from '@/config/pages';
+import { fontVariables } from '@/config/fonts';
+import { themeCssVariables } from '@/config/theme';
 
 const siteUrl = siteConfig.url
 
 // Site-wide SEO metadata, translated per language. Pages add their own title, description and alternates.
 export async function generateMetadata({ params }) {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'Metadata.Home' });
+  const t = await getTranslations({ locale, namespace: pages.home.metadata });
   const name = siteConfig.name;
 
   return {
@@ -41,13 +36,13 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title: t('ogTitle', { name }),
       description: t('description'),
-      url: localizedUrl('/', locale),
+      url: localizedUrl(pages.home.path, locale),
       siteName: name,
       images: [
         {
-          url: '/og-image-2.png',
-          width: 1200,
-          height: 630,
+          url: siteConfig.assets.ogImage.src,
+          width: siteConfig.assets.ogImage.width,
+          height: siteConfig.assets.ogImage.height,
           alt: t('ogImageAlt', { name }),
         },
       ],
@@ -55,22 +50,15 @@ export async function generateMetadata({ params }) {
       alternateLocale: getOgAlternateLocales(locale),
       type: 'website',
     },
-    // Favicons
-    icons: {
-      icon: [
-        { url: '/favicon/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-        { url: '/favicon/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-        { url: '/favicon/favicon-48x48.png', sizes: '48x48', type: 'image/png' }
-      ],
-      apple: '/favicon/apple-touch-icon.png'
-    },
+    // Favicons (config/site.js)
+    icons: siteConfig.assets.favicons,
 
     // Twitter-specific metadata for sharing on X
     twitter: {
       card: 'summary_large_image',
       title: t('ogTitle', { name }),
       description: t('description'),
-      images: ['/og-image-2.png'],
+      images: [siteConfig.assets.ogImage.src],
     },
   };
 }
@@ -88,8 +76,9 @@ export default async function RootLayout({ children, params }) {
   setRequestLocale(locale);
 
   return (
-    <html lang={locale} className="scroll-smooth">
-      <body className={`${inter.variable} bg-brand-dark font-sans text-brand-light antialiased`}>
+    // Theme colours as CSS variables (--color-background, …) for plain CSS; see config/theme.js.
+    <html lang={locale} className="scroll-smooth" style={themeCssVariables()}>
+      <body className={`${fontVariables} bg-background font-sans text-foreground antialiased`}>
         <NextIntlClientProvider>
           {children}
         </NextIntlClientProvider>

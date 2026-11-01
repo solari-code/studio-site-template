@@ -1,31 +1,19 @@
-import { getTranslations, setRequestLocale } from 'next-intl/server';
-import Impressum from "@/components/Impressum";
-import { siteConfig } from "@/config/site";
-import { getAlternates, localizedUrl, getOgLocale, getOgAlternateLocales } from "@/i18n/metadata";
+import { notFound } from 'next/navigation';
+import { setRequestLocale } from 'next-intl/server';
+import LegalPage from "@/components/LegalPage";
+import { pages, isEnabled } from "@/config/pages";
+import { pageMetadata } from "@/i18n/metadata";
 
 export async function generateMetadata({ params }) {
     const { locale } = await params;
-    const t = await getTranslations({ locale, namespace: 'Metadata.Impressum' });
-
-    return {
-        title: t('title'),
-        description: t('description', { name: siteConfig.name }),
-        alternates: getAlternates('/impressum', locale),
-        openGraph: {
-            title: t('title'),
-            description: t('description', { name: siteConfig.name }),
-            url: localizedUrl('/impressum', locale),
-            siteName: siteConfig.name,
-            locale: getOgLocale(locale),
-            alternateLocale: getOgAlternateLocales(locale),
-            type: "website",
-        },
-    };
+    return pageMetadata(locale, pages.impressum);
 }
 
-export default async function Page({ params }) {
+export default async function ImpressumPage({ params }) {
     const { locale } = await params;
     setRequestLocale(locale);
 
-    return <Impressum />
+    if (!isEnabled(pages.impressum)) notFound();
+
+    return <LegalPage page={pages.impressum} />;
 }

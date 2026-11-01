@@ -2,12 +2,17 @@
   "name": "studio-site-template",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "check:messages": "node scripts/check-messages.mjs"
+    "check:messages": "node scripts/check-messages.mjs",
+    "visual": "playwright test",
+    "visual:update": "playwright test --update-snapshots",
+    "check:config": "node scripts/check-config.mjs",
+    "check": "npm run check:config && npm run check:messages"
   },
   "dependencies": {
     "framer-motion": "^12.23.0",
@@ -22,6 +27,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.64.0",
     "autoprefixer": "^10.4.21",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",

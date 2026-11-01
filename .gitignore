@@ -54,3 +54,7 @@ next-env.d.ts
 
 # local Claude Code state
 .claude/
+
+# Visual regression snapshots (machine-specific, regenerate with npm run visual:update)
+/.snapshots
+/test-results

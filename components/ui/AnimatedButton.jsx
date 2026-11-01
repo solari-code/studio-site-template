@@ -8,16 +8,16 @@ export default function AnimatedCTAButton({ children, onClick = () => { }, class
         type={type}
         onClick={() => { onClick() }}
         disabled={Tag === "button" ? disabled : undefined}
-        className={`group relative inline-flex items-center justify-center px-8 py-3 text-white transition-all duration-300 ease-out transform rounded-lg shadow-lg focus:outline-none focus:ring-4 focus:ring-cyan-400/50 overflow-hidden ${disabled ? "opacity-60 cursor-not-allowed" : "cursor-pointer hover:shadow-2xl"} ${className} ${hoverScale && !disabled ? "hover:scale-105" : ""}`}
+        className={`group relative inline-flex items-center justify-center px-8 py-3 text-contrast transition-all duration-300 ease-out transform rounded-lg shadow-lg focus:outline-none focus:ring-4 focus:ring-accent/50 overflow-hidden ${disabled ? "opacity-60 cursor-not-allowed" : "cursor-pointer hover:shadow-2xl"} ${className} ${hoverScale && !disabled ? "hover:scale-105" : ""}`}
       >
         {/* Animated gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-blue via-cyan-400 to-brand-blue bg-size-200 bg-pos-0 group-hover:bg-pos-100 transition-all duration-500 rounded-lg"></div>
+        <div className="absolute inset-0 bg-gradient-cta-animated bg-size-200 bg-pos-0 group-hover:bg-pos-100 transition-all duration-500 rounded-lg"></div>
 
         {/* Glow effect */}
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-blue to-cyan-400 rounded-lg blur-sm opacity-0 group-hover:opacity-75 transition-opacity duration-300"></div>
+        <div className="absolute inset-0 bg-gradient-cta rounded-lg blur-sm opacity-0 group-hover:opacity-75 transition-opacity duration-300"></div>
 
         {/* Shimmer effect */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 rounded-lg"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-contrast/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 rounded-lg"></div>
 
         {/* Button content */}
         <span className="relative z-10 flex items-center gap-2">
@@ -33,7 +33,7 @@ export default function AnimatedCTAButton({ children, onClick = () => { }, class
         </span>
 
         {/* Pulse animation */}
-        {/* <div className="absolute inset-0 rounded-lg animate-pulse bg-gradient-to-r from-brand-blue/20 to-cyan-400/20"></div> */}
+        {/* <div className="absolute inset-0 rounded-lg animate-pulse bg-gradient-to-r from-primary/20 to-accent/20"></div> */}
 
       </Tag >
 

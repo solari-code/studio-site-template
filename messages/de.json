@@ -38,15 +38,13 @@
         "work": "Projekte",
         "process": "Ablauf",
         "about": "Über mich",
-        "contact": "Kontakt"
+        "contact": "Kontakt",
+        "impressum": "Impressum",
+        "privacy": "Datenschutz"
     },
     "Header": {
         "openMenu": "Menü öffnen",
         "closeMenu": "Menü schließen"
-    },
-    "Footer": {
-        "impressum": "Impressum",
-        "privacy": "Datenschutz"
     },
     "LanguageSwitcher": {
         "label": "Sprache"

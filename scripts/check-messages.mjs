@@ -13,8 +13,6 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const messagesDir = path.join(root, 'messages');
 
-// i18n/routing.js has no "type": "module" context; silence Node's reparse notice for a clean report.
-process.removeAllListeners('warning');
 const { locales, defaultLocale } = await import(path.join(root, 'i18n', 'routing.js'));
 
 // Flattens nested objects and arrays into "a.b.0.c" -> value

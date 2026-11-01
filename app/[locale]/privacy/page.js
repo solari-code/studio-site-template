@@ -1,31 +1,19 @@
-import { getTranslations, setRequestLocale } from 'next-intl/server';
-import PrivacyPage from "@/components/Privacy";
-import { siteConfig } from "@/config/site";
-import { getAlternates, localizedUrl, getOgLocale, getOgAlternateLocales } from "@/i18n/metadata";
+import { notFound } from 'next/navigation';
+import { setRequestLocale } from 'next-intl/server';
+import LegalPage from "@/components/LegalPage";
+import { pages, isEnabled } from "@/config/pages";
+import { pageMetadata } from "@/i18n/metadata";
 
 export async function generateMetadata({ params }) {
     const { locale } = await params;
-    const t = await getTranslations({ locale, namespace: 'Metadata.Privacy' });
-
-    return {
-        title: t('title'),
-        description: t('description', { name: siteConfig.name }),
-        alternates: getAlternates('/privacy', locale),
-        openGraph: {
-            title: t('title'),
-            description: t('description', { name: siteConfig.name }),
-            url: localizedUrl('/privacy', locale),
-            siteName: siteConfig.name,
-            locale: getOgLocale(locale),
-            alternateLocale: getOgAlternateLocales(locale),
-            type: "website",
-        },
-    };
+    return pageMetadata(locale, pages.privacy);
 }
 
-export default async function Page({ params }) {
+export default async function PrivacyPage({ params }) {
     const { locale } = await params;
     setRequestLocale(locale);
 
-    return <PrivacyPage />
+    if (!isEnabled(pages.privacy)) notFound();
+
+    return <LegalPage page={pages.privacy} />;
 }

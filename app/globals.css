@@ -2,46 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  scroll-behavior: smooth;
+/* Colours come from config/theme.js as CSS variables (--color-*), set on <html> in the root layout. */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  /* Headings use the `heading` font role from config/theme.js (same as body by default). */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: theme('fontFamily.heading');
+  }
 }
 
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 textarea:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0px 1000px #0D1117 inset;
-  -webkit-text-fill-color: #E6EDF3;
-  /* border-color: rgba(255, 255, 255, 0.1) !important; */
+  -webkit-box-shadow: 0 0 0px 1000px var(--color-background) inset;
+  -webkit-text-fill-color: var(--color-foreground);
 }
 
-body {
-  background-color: #0D1117;
-  /* brand-dark */
-  color: #E6EDF3;
-  /* brand-light */
-}
-
-/* Style for the hero background image */
-#hero {
-  /* background-image: url('https://images.unsplash.com/photo-1620121692029-d088224ddc74?q=80&w=2400&auto=format&fit=crop'); */
-  /* background-image: url('/images/hero/gradient_03.gif'); */
-  /* background-size: cover;
-  background-position: center; */
-}
-
-#hero video::-webkit-media-controls {
+.hero-video::-webkit-media-controls {
   display: none !important;
   -webkit-appearance: none;
-}
-
-#hero h1 {
-  white-space: nowrap;
-}
-
-.hero-overlay {
-  background-color: rgba(13, 17, 23, 0.5);
-  /* brand-dark with 70% opacity */
 }
 
 .scroll-down-indicator {

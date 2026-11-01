@@ -8,13 +8,13 @@ const LegalHeader = () => {
     const t = useTranslations('Legal');
 
     return (
-        <header className="bg-brand-surface border-b border-white/10">
+        <header className="bg-surface border-b border-contrast/10">
             <div className="container mx-auto px-6 py-4 flex justify-between items-center">
                 <Link href="/" className="flex items-center space-x-3">
-                    <Logo className="h-8 w-auto text-white" />
+                    <Logo className="h-8 w-auto text-contrast" />
                 </Link>
                 <Link href="/">
-                    <AnimatedCTAButton className="text-white font-medium">{t('backHome')}</AnimatedCTAButton>
+                    <AnimatedCTAButton className="text-contrast font-medium">{t('backHome')}</AnimatedCTAButton>
                 </Link>
             </div>
         </header>

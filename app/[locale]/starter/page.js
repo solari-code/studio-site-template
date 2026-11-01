@@ -1,42 +1,22 @@
-import { getTranslations, setRequestLocale } from 'next-intl/server';
-import StarterPackagePage from "@/components/starter-package/StarterPackagePage";
-import ScrollFadeProvider from "@/components/ui/ScrollFadeProvider";
-import { siteConfig } from "@/config/site";
-import { getAlternates, localizedUrl, getOgLocale, getOgAlternateLocales } from "@/i18n/metadata";
+import { notFound } from 'next/navigation';
+import { setRequestLocale } from 'next-intl/server';
+import Page from "@/components/Page";
+import { pages, isEnabled } from "@/config/pages";
+import { pageMetadata } from "@/i18n/metadata";
 
-// The layout's title template appends " | <site name>". The Open Graph image comes from ./opengraph-image.jsx.
+// Title, description, canonical/hreflang and Open Graph from config/pages.js + messages.
+// The Open Graph image comes from ./opengraph-image.jsx.
 export async function generateMetadata({ params }) {
     const { locale } = await params;
-    const t = await getTranslations({ locale, namespace: 'Metadata.Starter' });
-
-    return {
-        title: t('title'),
-        description: t('description'),
-        alternates: getAlternates('/starter', locale),
-        openGraph: {
-            title: t('title'),
-            description: t('description'),
-            url: localizedUrl('/starter', locale),
-            siteName: siteConfig.name,
-            locale: getOgLocale(locale),
-            alternateLocale: getOgAlternateLocales(locale),
-            type: "website",
-        },
-        twitter: {
-            card: "summary_large_image",
-            title: t('title'),
-            description: t('description'),
-        },
-    };
+    return pageMetadata(locale, pages.starter);
 }
 
-export default async function Page({ params }) {
+export default async function StarterPage({ params }) {
     const { locale } = await params;
     setRequestLocale(locale);
 
-    return (
-        <ScrollFadeProvider>
-            <StarterPackagePage />
-        </ScrollFadeProvider>
-    )
+    // `enabled: false` in config/pages.js switches the page off.
+    if (!isEnabled(pages.starter)) notFound();
+
+    return <Page page={pages.starter} />;
 }

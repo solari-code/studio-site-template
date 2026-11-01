@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
+import { theme, withAlpha, gradientCss } from "@/config/theme";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -20,7 +21,7 @@ export default async function Image({ params }) {
                 style={{
                     width: "1200px",
                     height: "630px",
-                    background: "#0D1117",
+                    background: theme.colors.background,
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
@@ -39,7 +40,7 @@ export default async function Image({ params }) {
                         transform: "translateX(-50%)",
                         width: "900px",
                         height: "500px",
-                        background: "radial-gradient(ellipse, rgba(6,182,212,0.18) 0%, transparent 65%)",
+                        background: `radial-gradient(ellipse, ${withAlpha("accent-deep", 0.18)} 0%, transparent 65%)`,
                         pointerEvents: "none",
                     }}
                 />
@@ -52,9 +53,9 @@ export default async function Image({ params }) {
                         gap: "8px",
                         padding: "8px 20px",
                         borderRadius: "999px",
-                        border: "1px solid rgba(255,255,255,0.1)",
-                        background: "rgba(255,255,255,0.05)",
-                        color: "#22d3ee",
+                        border: `1px solid ${withAlpha("contrast", 0.1)}`,
+                        background: withAlpha("contrast", 0.05),
+                        color: theme.colors.accent,
                         fontSize: "13px",
                         fontWeight: "700",
                         letterSpacing: "0.15em",
@@ -70,7 +71,7 @@ export default async function Image({ params }) {
                     style={{
                         fontSize: "76px",
                         fontWeight: "800",
-                        color: "#ffffff",
+                        color: theme.colors.contrast,
                         lineHeight: 1.05,
                         textAlign: "center",
                         marginBottom: "12px",
@@ -87,7 +88,7 @@ export default async function Image({ params }) {
                         lineHeight: 1.05,
                         textAlign: "center",
                         letterSpacing: "-0.02em",
-                        background: "linear-gradient(90deg, #d946ef, #22d3ee)",
+                        background: gradientCss("highlight-mix", "90deg"),
                         backgroundClip: "text",
                         color: "transparent",
                         display: "flex",

@@ -34,7 +34,7 @@ export default function LanguageSwitcher({ variant = 'compact', className = '' }
                         code={code}
                         pathname={pathname}
                         isActive={code === locale}
-                        className={`transition-colors ${code === locale ? 'text-white' : 'hover:text-white'}`}
+                        className={`transition-colors ${code === locale ? 'text-contrast' : 'hover:text-contrast'}`}
                     >
                         {localeNames[code]}
                     </LocaleLink>
@@ -55,7 +55,7 @@ export default function LanguageSwitcher({ variant = 'compact', className = '' }
                         code={code}
                         pathname={pathname}
                         isActive={code === locale}
-                        className={`block py-2 text-lg transition-colors duration-300 ${code === locale ? 'text-white' : 'text-brand-gray hover:text-white'}`}
+                        className={`block py-2 text-lg transition-colors duration-300 ${code === locale ? 'text-contrast' : 'text-muted hover:text-contrast'}`}
                     >
                         {localeNames[code]}
                     </LocaleLink>
@@ -92,7 +92,7 @@ function LocaleLink({ code, pathname, isActive, className, children, onClick }) 
 function Pill({ locale, pathname, label, size = 'sm', className = '' }) {
     const sizeClasses = size === 'lg' ? 'px-4 py-1.5 text-sm' : 'px-3 py-1 text-xs';
     return (
-        <nav aria-label={label} className={`inline-flex items-center rounded-full border border-white/10 bg-white/5 p-1 ${className}`}>
+        <nav aria-label={label} className={`inline-flex items-center rounded-full border border-contrast/10 bg-contrast/5 p-1 ${className}`}>
             {locales.map((code) => {
                 const isActive = code === locale;
                 return (
@@ -101,7 +101,7 @@ function Pill({ locale, pathname, label, size = 'sm', className = '' }) {
                         code={code}
                         pathname={pathname}
                         isActive={isActive}
-                        className={`rounded-full font-bold uppercase tracking-widest transition-colors duration-300 ${sizeClasses} ${isActive ? 'bg-white/10 text-white' : 'text-brand-gray hover:text-white'}`}
+                        className={`rounded-full font-bold uppercase tracking-widest transition-colors duration-300 ${sizeClasses} ${isActive ? 'bg-contrast/10 text-contrast' : 'text-muted hover:text-contrast'}`}
                     >
                         {code}
                     </LocaleLink>
@@ -136,16 +136,16 @@ function Dropdown({ locale, pathname, label, className = '' }) {
                 aria-label={label}
                 aria-haspopup="menu"
                 aria-expanded={isOpen}
-                className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 pl-4 pr-3 py-1.5 text-xs font-bold uppercase tracking-widest text-white hover:bg-white/10 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-400/50"
+                className="inline-flex items-center gap-1.5 rounded-full border border-contrast/10 bg-contrast/5 pl-4 pr-3 py-1.5 text-xs font-bold uppercase tracking-widest text-contrast hover:bg-contrast/10 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-accent/50"
             >
                 {locale}
-                <ChevronDown size={14} className={`text-brand-gray transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown size={14} className={`text-muted transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
             </button>
 
             <div
                 role="menu"
                 aria-label={label}
-                className={`absolute right-0 mt-2 min-w-[11rem] rounded-xl border border-white/10 bg-brand-surface/95 backdrop-blur-lg shadow-2xl p-1.5 transition-all duration-200 origin-top-right ${isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}
+                className={`absolute right-0 mt-2 min-w-[11rem] rounded-xl border border-contrast/10 bg-surface/95 backdrop-blur-lg shadow-2xl p-1.5 transition-all duration-200 origin-top-right ${isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}
             >
                 {locales.map((code) => {
                     const isActive = code === locale;
@@ -156,10 +156,10 @@ function Dropdown({ locale, pathname, label, className = '' }) {
                             pathname={pathname}
                             isActive={isActive}
                             onClick={() => setIsOpen(false)}
-                            className={`flex items-center justify-between gap-4 rounded-lg px-3 py-2 text-sm transition-colors ${isActive ? 'text-white bg-white/5' : 'text-brand-gray hover:text-white hover:bg-white/5'}`}
+                            className={`flex items-center justify-between gap-4 rounded-lg px-3 py-2 text-sm transition-colors ${isActive ? 'text-contrast bg-contrast/5' : 'text-muted hover:text-contrast hover:bg-contrast/5'}`}
                         >
                             <span>{localeNames[code]}</span>
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-brand-gray/70">{code}</span>
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-muted/70">{code}</span>
                         </LocaleLink>
                     );
                 })}
