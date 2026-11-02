@@ -1,4 +1,4 @@
-import { withAlpha } from '@/config/theme';
+import { colorVar } from '@/config/theme';
 
 /**
  * Soft radial glow as a CSS background, used on mobile where a blurred element would be too expensive.
@@ -7,6 +7,6 @@ import { withAlpha } from '@/config/theme';
  *   style={{ background: radialGlow('secondary', [0.045, 0.042, 0.035, 0.026, 0.017, 0.009, 0.005, 0.002]) }}
  */
 export function radialGlow(token, alphas, { shape = 'circle at center', step = 10 } = {}) {
-    const stops = alphas.map((alpha, i) => `${withAlpha(token, alpha)} ${i * step}%`);
+    const stops = alphas.map((alpha, i) => `${colorVar(token, alpha)} ${i * step}%`);
     return `radial-gradient(${shape}, ${stops.join(', ')}, transparent 100%)`;
 }

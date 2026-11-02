@@ -1,18 +1,25 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { theme, gradientColors, hexToRgb } from '@/config/theme';
+import { theme, gradientVar } from '@/config/theme';
+import { useColorMode } from '@/components/ColorModeProvider';
 
-// Interpolates between two hex colours, e.g. interpolateColor('#000000', '#ffffff', 0.5) -> 'rgb(128, 128, 128)'
-const interpolateColor = (color1, color2, factor) => {
-    const rgb1 = hexToRgb(color1);
-    const rgb2 = hexToRgb(color2);
-
+// Interpolates between two `{ r, g, b }` colours, e.g. factor 0.5 between black and white -> 'rgb(128, 128, 128)'
+const interpolateColor = (rgb1, rgb2, factor) => {
     const r = Math.round(rgb1.r + factor * (rgb2.r - rgb1.r));
     const g = Math.round(rgb1.g + factor * (rgb2.g - rgb1.g));
     const b = Math.round(rgb1.b + factor * (rgb2.b - rgb1.b));
 
     return `rgb(${r}, ${g}, ${b})`;
+};
+
+// Reads the `--color-<token>: r g b` variables of a gradient's stops as they apply to `element`.
+const readGradient = (element, name) => {
+    const style = getComputedStyle(element);
+    return theme.gradients[name].map((token) => {
+        const [r, g, b] = style.getPropertyValue(`--color-${token}`).trim().split(/\s+/).map(Number);
+        return { r, g, b };
+    });
 };
 
 /**
@@ -27,6 +34,15 @@ const ScrollAwareGradient = ({
 }) => {
     const textRef = useRef(null);
     const [progress, setProgress] = useState(0);
+    // Colour stops of both gradients, read from the CSS variables once the element is mounted
+    // and again whenever the colour mode changes.
+    const [stops, setStops] = useState(null);
+    const { mode } = useColorMode();
+
+    useEffect(() => {
+        if (!textRef.current) return;
+        setStops({ from: readGradient(textRef.current, from), to: readGradient(textRef.current, to) });
+    }, [from, to, mode]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -53,13 +69,19 @@ const ScrollAwareGradient = ({
     }, []);
 
     // Blend the start and end colours of both gradients according to the scroll progress.
-    const [startColor1, endColor1] = gradientColors(from);
-    const [startColor2, endColor2] = gradientColors(to);
-    const currentStartColor = interpolateColor(startColor1, startColor2, progress);
-    const currentEndColor = interpolateColor(endColor1, endColor2, progress);
+    // Until the variables have been read (server render, first paint) the `from` gradient is
+    // used as is, which is exactly what progress 0 would produce.
+    let backgroundImage = gradientVar(from);
+    if (stops && progress > 0) {
+        const [startColor1, endColor1] = stops.from;
+        const [startColor2, endColor2] = stops.to;
+        const currentStartColor = interpolateColor(startColor1, startColor2, progress);
+        const currentEndColor = interpolateColor(endColor1, endColor2, progress);
+        backgroundImage = `linear-gradient(to right, ${currentStartColor}, ${currentEndColor})`;
+    }
 
     const gradientStyle = {
-        backgroundImage: `linear-gradient(to right, ${currentStartColor}, ${currentEndColor})`,
+        backgroundImage,
         WebkitBackgroundClip: 'text',
         backgroundClip: 'text',
         color: 'transparent',

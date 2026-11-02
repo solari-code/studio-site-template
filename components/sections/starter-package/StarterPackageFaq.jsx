@@ -23,14 +23,14 @@ const StarterPackageFaq = function ({ id = 'starter-faq', namespace = 'Starter.F
                     <h2 className="text-3xl lg:text-4xl font-bold text-contrast mb-4">
                         {t.rich('title', { highlight: (chunks) => <span className="bg-gradient-highlight text-transparent bg-clip-text">{chunks}</span> })}
                     </h2>
-                    <p className="text-muted-alt">{t('subtitle')}</p>
+                    <p className="text-muted">{t('subtitle')}</p>
                 </div>
 
                 <div className="space-y-4">
                     {faqs.map((faq, index) => (
                         <div
                             key={index}
-                            className={`border rounded-xl overflow-hidden transition-all duration-300 ${openFaq === index ? 'bg-contrast/[0.03] border-accent-deep/30' : 'bg-transparent border-contrast/10'}`}
+                            className={`border rounded-xl overflow-hidden transition-all duration-300 ${openFaq === index ? 'bg-contrast/[0.03] border-accent/30' : 'bg-transparent border-contrast/10'}`}
                         >
                             <button
                                 onClick={() => toggleFaq(index)}
@@ -43,13 +43,13 @@ const StarterPackageFaq = function ({ id = 'starter-faq', namespace = 'Starter.F
                                 {openFaq === index ? (
                                     <Minus className="text-accent shrink-0" size={20} />
                                 ) : (
-                                    <Plus className="text-muted-deep shrink-0" size={20} />
+                                    <Plus className="text-muted-strong shrink-0" size={20} />
                                 )}
                             </button>
                             <div
                                 className={`overflow-hidden transition-all duration-300 ease-in-out ${openFaq === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
                             >
-                                <div className="p-6 text-muted-alt leading-relaxed border-t border-contrast/5">
+                                <div className="p-6 text-muted leading-relaxed border-t border-contrast/5">
                                     {faq.answer}
                                 </div>
                             </div>

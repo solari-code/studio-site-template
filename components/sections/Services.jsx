@@ -25,7 +25,7 @@ const Services = ({ id = 'services', namespace = 'Services', items = requireProp
                     const Icon = getIcon(service.icon);
                     return (
                         <div key={service.id} className="fade-in group bg-contrast/[0.03] p-8 rounded-2xl border border-contrast/10 transition-all duration-300 md:hover:bg-contrast/[0.06] md:hover:border-contrast/20 md:hover:-translate-y-1 text-center md:text-left">
-                            <div className="p-3 bg-contrast/5 rounded-xl group-hover:bg-accent-deep/10 transition-colors text-accent w-fit mb-6 mx-auto md:mx-0"><Icon className="h-8 w-8" /></div>
+                            <div className="p-3 bg-contrast/5 rounded-xl group-hover:bg-accent/10 transition-colors text-accent w-fit mb-6 mx-auto md:mx-0"><Icon className="h-8 w-8" /></div>
                             <h3 className="text-xl font-bold text-contrast mb-2">{t(`items.${service.id}.title`)}</h3>
                             <p className="text-muted">{t(`items.${service.id}.description`)}</p>
                         </div>

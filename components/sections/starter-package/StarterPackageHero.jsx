@@ -11,8 +11,8 @@ const StarterPackageHero = function ({ id = 'starter-hero', namespace = 'Starter
 
         <section id={id} className="relative h-screen w-full pt-32 pb-20 lg:pt-48 lg:pb-32 px-6 overflow-hidden flex flex-col items-center text-center">
             {/* Background Effects */}
-            <div className="md:hidden absolute top-[calc(-10%-200px)] left-1/2 -translate-x-1/2 w-[1300px] h-[900px] pointer-events-none" style={{ background: radialGlow('accent-deep', [0.08, 0.075, 0.062, 0.046, 0.03, 0.017, 0.008, 0.004, 0.002], { shape: 'ellipse at center' }) }} />
-            <div className="hidden md:block absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-accent-deep/10 rounded-full blur-[120px] pointer-events-none" />
+            <div className="md:hidden absolute top-[calc(-10%-200px)] left-1/2 -translate-x-1/2 w-[1300px] h-[900px] pointer-events-none" style={{ background: radialGlow('accent', [0.08, 0.075, 0.062, 0.046, 0.03, 0.017, 0.008, 0.004, 0.002], { shape: 'ellipse at center' }) }} />
+            <div className="hidden md:block absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-accent/10 rounded-full blur-[120px] pointer-events-none" />
 
             <div className="relative z-10 max-w-5xl mx-auto relative h-full w-full flex flex-col items-center justify-center text-center z-20 px-6">
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-contrast/5 border border-contrast/10 text-accent text-xs font-bold mb-8 uppercase tracking-widest">
@@ -27,7 +27,7 @@ const StarterPackageHero = function ({ id = 'starter-hero', namespace = 'Starter
                     })}
                 </h1>
 
-                <p className="text-lg md:text-xl text-muted-alt mb-12 max-w-2xl mx-auto leading-relaxed">
+                <p className="text-lg md:text-xl text-muted mb-12 max-w-2xl mx-auto leading-relaxed">
                     {t('subtitle')}
                 </p>
 

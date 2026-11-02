@@ -31,7 +31,7 @@ No environment variables are needed to run the site. To make the contact forms a
 Clone the template once per client, then work through `config/` top to bottom:
 
 1. **`config/site.js`** – name, URL, contact details, social links, favicons, link-preview image, notification-mail subjects.
-2. **`config/theme.js`** – colours, gradients, font roles. **`config/fonts.js`** – the font files (see the comments there for local, static-weight and Google fonts).
+2. **`config/theme.js`** – colours (dark and/or light palette), gradients, font roles. **`config/fonts.js`** – the font files (see the comments there for local, static-weight and Google fonts).
 3. **`config/logo.jsx`** – replace the placeholder mark with the client's logo (SVG or `<img>`). Swap the favicons in `public/favicon/` and `app/favicon.ico`, and the preview image `public/og-image-2.png`.
 4. **`config/pages.js`** – compose the pages: which sections in which order, their data, the hero background, the navigation. Disable pages you don't need (`enabled: false`).
 5. **`config/icons.js`** – only if a section needs an icon that isn't registered yet.
@@ -67,7 +67,7 @@ impressum: { path: '/impressum', type: 'legal', namespace: 'Impressum', nav: { l
 - **Data** (items, projects, steps, cards, criteria, images, links) sits on the section entry and is passed to the component as props. The texts live in the messages under the section's namespace, keyed by `id` (e.g. `Services.items.websites`). `namespace` overrides the default namespace when the same type is used twice.
 - **Icons** are referenced by name (`icon: 'rocket'`) and registered in `config/icons.js`: custom SVG paths or anything from [lucide](https://lucide.dev), imported there once.
 - **`enabled: false`** switches a page off: 404, not in the sitemap, not in the navigation. **`previewImage: false`** leaves the link-preview image to a route's own `opengraph-image` file (as for `/starter`).
-- **Legal pages** use `type: 'legal'` with a messages `namespace` instead of sections; `extraSections` lists additional keys rendered after the regular sections (used for the Umami paragraph).
+- **Legal pages** use `type: 'legal'` with a messages `namespace` instead of sections; `extraSections` lists additional keys rendered after the regular sections (used for the Umami section), `extraParagraphs` maps a section index to keys whose paragraphs are appended to that section (used for the colour-mode note).
 
 A forgotten data prop, an unknown type or icon fails the build with a message that says what to add where; `npm run check:config` finds the same things (plus missing files and ids without texts) without building.
 
@@ -81,21 +81,50 @@ background: { type: 'gradient', css: 'radial-gradient(circle at top, #1e293b, #0
 background: { type: 'color', color: 'surface' }                             // a colour token or CSS colour
 ```
 
-`mobile` overrides the sources below 768px; omit `background` for none. `overlay: { color: 'background', opacity: 0.5 }` tints the background (`false` to disable), `logo: false` hides the logo mark, `ctaHref` is the button's target.
+`mobile` overrides the sources below 768px; omit `background` for none. `overlay: { color: 'background', opacity: 0.5 }` tints the background (`false` to disable), `logo: false` hides the logo mark, `ctaHref` is the button's target, `colorMode` pins the hero to a colour mode (`'dark'` by default, see [Colour modes](#colour-modes)).
 
 ## Theme
 
-All colours live in `config/theme.js` as semantic tokens with the current look as defaults:
+All colours live in `config/theme.js`. The palette is small on purpose: a few **base colours** per colour mode and a few **shades** derived from them by mixing, so a different palette is a change to a handful of values and everything else follows.
+
+Base colours (`theme.colors.dark`, `theme.colors.light`):
 
 | Token | Used for |
 |---|---|
-| `background`, `surface`, `surface-deep` | page background, alternating sections/cards, extra-dark panels |
-| `foreground`, `muted`, `muted-alt`, `muted-deep`, `muted-soft` | body text and the secondary text shades |
-| `contrast`, `contrast-muted`, `on-contrast` | headings and (with alpha) hairline borders and card fills; text on contrast-coloured surfaces |
-| `primary`, `accent`, `accent-deep`, `secondary`, `secondary-alt`, `tertiary` | brand colours: buttons, icons/badges, glows, highlighted words |
+| `background`, `foreground`, `contrast` | page background; body text; the highest-contrast colour (white on a dark theme) for headings and, with alpha, hairline borders and card fills (`border-contrast/10`). Text on a contrast-coloured surface uses `background`. |
+| `primary`, `accent`, `secondary`, `tertiary`, `on-brand` | brand colours: buttons and focus rings; icons, badges, tags and glows; highlighted words and hover colour; end colour of the highlight gradient; text on brand-coloured surfaces (CTA buttons) |
 | `success`, `error`, `whatsapp` | status colours |
 
-Named gradients (`highlight`, `highlight-alt`, `highlight-mix`, `brand`, `cta`, `cta-animated`, `card-glow`) are pairs of tokens. Tailwind generates the utilities from all of this (`bg-surface`, `text-accent`, `border-contrast/10`, `bg-gradient-highlight`), the root layout exposes the tokens as CSS variables (`--color-background`, …) for plain CSS, and components never use raw colour values — so a different palette is a change to one file.
+Derived shades (`theme.shades`), each defined as a base colour mixed towards another colour, e.g. `surface: { base: 'background', mix: 'contrast', amount: 0.04 }`:
+
+| Token | Used for |
+|---|---|
+| `surface`, `surface-deep` | alternating sections and cards; the emphasised dark panel (pricing card) |
+| `muted`, `muted-strong` | secondary text; small labels and inactive icons |
+
+Shades are used exactly like base colours (`bg-surface`, `text-muted`) and follow the same rule in every mode. To pin a shade to a specific value in one mode, add it to that mode's palette – an explicit colour wins over the derived one.
+
+### Colour modes
+
+`theme.colors` holds one palette per mode, `dark` and/or `light`; `theme.colorMode` decides how they are used:
+
+| Setup | `colors` | `colorMode` |
+|---|---|---|
+| dark only / light only | one palette | – |
+| system preference | both | `{ default: 'system', toggle: false }` – follows the operating system, incl. live changes |
+| system preference + toggle | both | `{ default: 'system', toggle: true }` – plus a dark/light switch in the header, mobile menu and footer |
+
+`default: 'dark'` or `'light'` with both palettes starts fixed (combine with `toggle: true`, or keep the second palette just for pinned sections, see below). The toggle stores the visitor's choice in `localStorage` (key `color-mode`, no cookie). The privacy policy covers this automatically: the `Privacy.colorMode` paragraph in the messages is appended to the "Data collection" section only when the toggle is enabled (`extraParagraphs` on the privacy page in `config/pages.js`). Without the toggle nothing is stored and nothing is shown.
+
+Under the hood the root layout inlines one set of CSS variables per mode, switched by `data-color-mode` on `<html>`, which an inline script sets before the first paint (no flash of the wrong mode). Components don't need to know about modes: every token simply resolves to the current palette. Where a component must differ per mode, Tailwind's `dark:` and `light:` variants are available; they follow the site's mode.
+
+A section can be **pinned to one mode**: the homepage hero is pinned dark by default (`colorMode: 'dark'` on its entry in `config/pages.js`), because its footage is dark and a light overlay would wash it out; the floating header over it takes the same mode. Set `colorMode: 'auto'` to let the hero follow the site, or `'light'` to pin it light. The price card on `/starter` can be pinned the same way (`cardColorMode` on the `starter-pricing` entry; it follows the site by default). A pin is ignored when that palette isn't configured. To pin anything else, spread `colorModeAttribute(mode)` from `config/theme.js` onto the element.
+
+`npm run check:config` validates the modes: every palette defines the same base colours, shades and gradients resolve in every mode, and `colorMode.default` / `toggle` match the configured palettes.
+
+Named gradients (`highlight`, `highlight-alt`, `highlight-mix`, `brand`, `cta`, `cta-animated`, `card-glow`) are lists of tokens.
+
+The root layout exposes every token as a CSS variable holding its colour channels (`--color-background: 13 17 23`), Tailwind generates its utilities from those variables (`bg-surface`, `text-accent`, `border-contrast/10`, `bg-gradient-highlight`), and components never use raw colour values. In plain CSS use `rgb(var(--color-background))` or, with alpha, `rgb(var(--color-contrast) / 0.1)`. For inline styles `config/theme.js` exports `colorVar(token, alpha?)` and `gradientVar(name, direction?)`, which build the same references; the server-rendered OG image, which can't use CSS variables, uses the static hex helpers (`colors`, `withAlpha()`, `gradientCss()`) with the palette of the default mode (the first one with `'system'`).
 
 Fonts are loaded in `config/fonts.js` (`next/font` needs literal arguments there, which is why they are not in `theme.js`) and assigned to the `body` and `heading` roles in `config/theme.js`.
 
@@ -135,7 +164,7 @@ That's it: routes, the language switcher, metadata, `hreflang` links and the sit
 
 ## Visual regression check
 
-`npm run visual:update` records full-page screenshots of every page (both languages, desktop and mobile) into `.snapshots/`; `npm run visual` compares the current build against them with zero tolerance. Useful when refactoring or touching the theme. Needs `npx playwright install chromium` once; the snapshots are machine-specific and not committed.
+`npm run visual:update` records full-page screenshots of every page (both languages, every configured colour mode, desktop and mobile) into `.snapshots/`; `npm run visual` compares the current build against them with zero tolerance. Useful when refactoring or touching the theme. Needs `npx playwright install chromium` once; the snapshots are machine-specific and not committed.
 
 ## Structure
 
@@ -143,7 +172,7 @@ That's it: routes, the language switcher, metadata, `hreflang` links and the sit
 - `messages/`: one JSON file per language with all texts
 - `app/[locale]/`: routes (`/`, `/starter`, `/impressum`, `/privacy`), the root layout with site-wide metadata, and the 404 page; `app/actions.js`: the contact-form server action; `app/sitemap.js`, `app/robots.js`
 - `components/sections/`: the section components and the registry (`index.jsx`); `starter-package/` holds the `/starter` sections
-- `components/`: `Page` (renders a page from its config), `Header`, `Footer`, `LegalPage`, `ContactOverlay` + provider, `LanguageSwitcher`, `Logo`; `ui/` for buttons, gradient text, glows
+- `components/`: `Page` (renders a page from its config), `Header`, `Footer`, `LegalPage`, `ContactOverlay` + provider, `LanguageSwitcher`, `ColorModeSwitcher` + `ColorModeProvider` (`useColorMode`), `Logo`; `ui/` for buttons, gradient text, glows
 - `i18n/`: language list (`routing.js`), locale-aware links (`navigation.js`), message loading with fallback (`request.js`), SEO helpers incl. `pageMetadata` (`metadata.js`)
 - `middleware.js`: adds the language prefix to URLs
 - `scripts/`: `check-config.mjs`, `check-messages.mjs`

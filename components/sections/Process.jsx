@@ -20,7 +20,7 @@ const Process = ({ id = 'process', namespace = 'Process', steps = requireProp('p
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {steps.map((id, index) => (
                     <div key={id} className="group p-6 bg-contrast/[0.03] border border-contrast/10 rounded-2xl transition-all duration-300 hover:bg-contrast/[0.06] hover:border-contrast/20 hover:-translate-y-1 fade-in flex flex-col items-center text-center">
-                        <div className="w-14 h-14 flex items-center justify-center rounded-full border border-accent-deep/30 group-hover:border-accent text-accent text-lg font-bold mb-5 transition-colors duration-300 shadow-glow bg-contrast/[0.03]">
+                        <div className="w-14 h-14 flex items-center justify-center rounded-full border border-accent/30 group-hover:border-accent text-accent text-lg font-bold mb-5 transition-colors duration-300 shadow-glow bg-contrast/[0.03]">
                             {String(index + 1).padStart(2, "0")}
                         </div>
                         <h3 className="text-contrast font-bold mb-2 uppercase tracking-wider text-sm">{t(`steps.${id}.title`)}</h3>

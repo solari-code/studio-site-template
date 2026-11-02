@@ -6,7 +6,7 @@
  *   namespaces exist in the messages, section data (items, projects, steps, …) matches the
  *   messages, icons are registered, referenced images/videos exist
  * - config/site.js: social icons, favicons, preview image, form definitions
- * - config/theme.js: gradients and the scroll gradient reference existing tokens
+ * - config/theme.js: colour modes, shades, gradients and the scroll gradient reference existing tokens
  *
  * Errors (things that would break or silently hide content) exit with code 1; warnings don't.
  * Run it with: npm run check:config
@@ -18,7 +18,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const { pages, sectionId, enabledPages } = await import(path.join(root, 'config', 'pages.js'));
 const { siteConfig } = await import(path.join(root, 'config', 'site.js'));
-const { theme } = await import(path.join(root, 'config', 'theme.js'));
+const { theme, colors, colorModes, resolveColors } = await import(path.join(root, 'config', 'theme.js'));
 const { defaultLocale } = await import(path.join(root, 'i18n', 'routing.js'));
 const messages = JSON.parse(await readFile(path.join(root, 'messages', `${defaultLocale}.json`), 'utf8'));
 
@@ -71,6 +71,13 @@ function checkIds(ids, namespace, key, where) {
     for (const id of ids) checkMessageKey(`${namespace}.${key}.${id}`, where);
 }
 
+// A section (or part of it) pinned to a colour mode: 'dark' | 'light' | 'auto' (config/theme.js).
+const checkPin = (value, option, where) => {
+    if (value === undefined) return;
+    if (!['dark', 'light', 'auto'].includes(value)) error(`${where}: ${option} "${value}" must be 'dark', 'light' or 'auto'`);
+    else if (value !== 'auto' && !theme.colors[value]) warn(`${where}: ${option} "${value}" is not a configured palette; it follows the site instead`);
+};
+
 const sectionChecks = {
     hero: async (s, ns, where) => {
         const bg = s.background;
@@ -83,9 +90,10 @@ const sectionChecks = {
                 if (bg.mobile?.poster) await checkFile(bg.mobile.poster, `${where} background.mobile.poster`);
             }
             if (bg.type === 'gradient' && !bg.css && !theme.gradients[bg.gradient]) error(`${where}: gradient "${bg.gradient}" is not defined in config/theme.js`);
-            if (bg.type === 'color' && !theme.colors[bg.color] && !/^(#|rgb|hsl)/.test(bg.color ?? '')) warn(`${where}: "${bg.color}" is neither a colour token nor a CSS colour`);
+            if (bg.type === 'color' && !colors[bg.color] && !/^(#|rgb|hsl)/.test(bg.color ?? '')) warn(`${where}: "${bg.color}" is neither a colour token nor a CSS colour`);
         }
-        if (s.overlay && s.overlay.color && !theme.colors[s.overlay.color]) error(`${where}: overlay colour "${s.overlay.color}" is not a token in config/theme.js`);
+        if (s.overlay && s.overlay.color && !colors[s.overlay.color]) error(`${where}: overlay colour "${s.overlay.color}" is not a token in config/theme.js`);
+        checkPin(s.colorMode, 'colorMode', where);
         checkMessageKey(`${ns}.title`, where);
         checkMessageKey(`${ns}.cta`, where);
     },
@@ -111,6 +119,7 @@ const sectionChecks = {
         s.criteria.forEach((c) => checkIcon(c.icon, `${where} criterion "${c.id}"`));
     },
     'starter-pricing': async (s, ns, where) => {
+        checkPin(s.cardColorMode, 'cardColorMode', where);
         if (!Array.isArray(s.cards)) return error(`${where}: "cards" is required`);
         checkIds(s.cards.map((c) => c.id), ns, 'cards', where);
         s.cards.forEach((c) => checkIcon(c.icon, `${where} card "${c.id}"`));
@@ -149,6 +158,11 @@ for (const [key, page] of Object.entries(pages)) {
         checkMessageKey(`${page.namespace}.title`, where);
         checkMessageKey(`${page.namespace}.sections`, where);
         for (const extra of page.extraSections ?? []) checkMessageKey(`${page.namespace}.${extra}.paragraphs`, `${where} extraSections`);
+        const sectionCount = (getMessage(`${page.namespace}.sections`) ?? []).length;
+        for (const [index, keys] of Object.entries(page.extraParagraphs ?? {})) {
+            if (!(Number(index) < sectionCount)) error(`${where} extraParagraphs: section index ${index} does not exist (${sectionCount} sections)`);
+            for (const key of keys) checkMessageKey(`${page.namespace}.${key}.paragraphs`, `${where} extraParagraphs`);
+        }
         continue;
     }
 
@@ -186,15 +200,64 @@ for (const [key, form] of Object.entries(siteConfig.forms ?? {})) {
 
 console.log('\nChecking config/theme.js\n');
 
-for (const [name, stops] of Object.entries(theme.gradients)) {
-    for (const token of stops) if (!theme.colors[token]) error(`gradient "${name}": "${token}" is not a colour token`);
+const isHex = (value) => /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(value ?? '');
+const knownModes = ['dark', 'light'];
+
+// Colour modes
+if (colorModes.length === 0) error(`colors must contain at least one palette ("dark" and/or "light")`);
+for (const key of Object.keys(theme.colors)) {
+    if (!knownModes.includes(key)) error(`colors.${key}: unknown mode; palettes are keyed by "dark" or "light"`);
+}
+const defaultMode = theme.colorMode?.default ?? 'system';
+if (colorModes.length > 1 && !['system', ...colorModes].includes(defaultMode)) {
+    error(`colorMode.default "${defaultMode}" must be "system" or a configured mode (${colorModes.join(', ')})`);
+}
+if (colorModes.length === 1 && !['system', colorModes[0]].includes(defaultMode)) {
+    warn(`colorMode.default "${defaultMode}" is not configured; the only palette (${colorModes[0]}) is used`);
+}
+const toggle = theme.colorMode?.toggle ?? false;
+if (typeof toggle !== 'boolean') error(`colorMode.toggle must be true or false`);
+if (toggle && colorModes.length < 2) warn(`colorMode.toggle is true but only one palette is configured; no toggle is shown`);
+const base = Object.keys(theme.colors[colorModes[0]] ?? {}).filter((name) => !theme.shades[name]);
+for (const mode of colorModes) {
+    const palette = theme.colors[mode];
+    for (const [name, value] of Object.entries(palette)) {
+        if (!isHex(value)) error(`colors.${mode}.${name}: "${value}" is not a hex colour (#rgb or #rrggbb)`);
+    }
+    for (const name of base) {
+        if (!palette[name]) error(`colors.${mode}: base colour "${name}" is missing (every mode defines the same base colours)`);
+    }
+}
+
+// Shades, checked against every mode (an explicit entry in a palette pins the shade for that mode)
+for (const [name, shade] of Object.entries(theme.shades)) {
+    for (const mode of colorModes) {
+        const palette = theme.colors[mode];
+        if (palette[name]) console.log(`  ℹ colors.${mode}.${name} pins the shade "${name}" to ${palette[name]}`);
+        if (!palette[shade.base]) error(`shade "${name}": base "${shade.base}" is not a base colour of mode "${mode}"`);
+        if (!isHex(shade.mix) && !palette[shade.mix]) error(`shade "${name}": mix "${shade.mix}" is neither a base colour of mode "${mode}" nor a hex colour`);
+    }
+    if (typeof shade.amount !== 'number' || shade.amount < 0 || shade.amount > 1) error(`shade "${name}": amount must be a number between 0 and 1`);
+}
+
+// Gradients and required tokens, per mode
+for (const mode of colorModes) {
+    let resolved;
+    try { resolved = resolveColors(mode); } catch (e) { error(e.message); continue; }
+    for (const [name, stops] of Object.entries(theme.gradients)) {
+        if (stops.length < 2) error(`gradient "${name}" needs at least two colour stops`);
+        for (const token of stops) if (!resolved[token]) error(`gradient "${name}": "${token}" is not a colour token in mode "${mode}"`);
+    }
+    for (const token of ['background', 'foreground', 'contrast', 'primary', 'accent', 'secondary', 'tertiary', 'on-brand', 'success', 'error', 'surface', 'surface-deep', 'muted', 'muted-strong']) {
+        if (!resolved[token]) error(`colour token "${token}" is required in mode "${mode}" (as a base colour or a shade)`);
+    }
 }
 for (const [role, name] of Object.entries(theme.scrollGradient)) {
     if (!theme.gradients[name]) error(`scrollGradient.${role}: gradient "${name}" is not defined`);
 }
-for (const token of ['background', 'surface', 'foreground', 'muted', 'contrast', 'primary', 'accent', 'secondary']) {
-    if (!theme.colors[token]) error(`colour token "${token}" is required`);
-}
+const setup = colorModes.length < 2 ? `${colorModes[0]} only`
+    : `${defaultMode === 'system' ? 'system preference' : `fixed ${defaultMode}`}${toggle ? ' + toggle' : ', no toggle'}`;
+console.log(`  ℹ colour modes: ${colorModes.join(', ')} (${setup})`);
 
 // Disabled pages
 for (const [key, page] of Object.entries(pages)) {

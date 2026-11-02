@@ -8,7 +8,8 @@ import { localizedUrl, getOgLocale, getOgAlternateLocales } from '@/i18n/metadat
 import { siteConfig } from '@/config/site';
 import { pages } from '@/config/pages';
 import { fontVariables } from '@/config/fonts';
-import { themeCssVariables } from '@/config/theme';
+import { themeCss, colorModeScript, resolveColors, colorModes, followsSystemColorMode, hasColorModeScript, staticColorMode, COLOR_MODE_ATTRIBUTE } from '@/config/theme';
+import ColorModeProvider from '@/components/ColorModeProvider';
 
 const siteUrl = siteConfig.url
 
@@ -63,6 +64,15 @@ export async function generateMetadata({ params }) {
   };
 }
 
+// Browser chrome colour (address bar on mobile): one entry per colour mode, picked by the OS
+// preference; ColorModeProvider updates it when the visitor toggles.
+export function generateViewport() {
+  const themeColor = followsSystemColorMode
+    ? colorModes.map((mode) => ({ media: `(prefers-color-scheme: ${mode})`, color: resolveColors(mode).background }))
+    : resolveColors(staticColorMode).background;
+  return { themeColor };
+}
+
 // Prerender every page once per language.
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -75,12 +85,22 @@ export default async function RootLayout({ children, params }) {
   // Lets next-intl know the locale without reading request headers, which keeps pages static.
   setRequestLocale(locale);
 
+  // Colour mode (config/theme.js): a fixed mode is set on <html> here; otherwise the inline
+  // script below picks the OS-preferred or stored mode before the first paint.
+  const htmlAttributes = hasColorModeScript ? { suppressHydrationWarning: true } : { [COLOR_MODE_ATTRIBUTE]: staticColorMode };
+
   return (
-    // Theme colours as CSS variables (--color-background, …) for plain CSS; see config/theme.js.
-    <html lang={locale} className="scroll-smooth" style={themeCssVariables()}>
+    <html lang={locale} className="scroll-smooth" {...htmlAttributes}>
+      <head>
+        {/* Theme colours as CSS variables (--color-<token>: r g b) per mode; Tailwind and plain CSS read them. */}
+        <style dangerouslySetInnerHTML={{ __html: themeCss() }} />
+        {hasColorModeScript && <script dangerouslySetInnerHTML={{ __html: colorModeScript() }} />}
+      </head>
       <body className={`${fontVariables} bg-background font-sans text-foreground antialiased`}>
         <NextIntlClientProvider>
-          {children}
+          <ColorModeProvider>
+            {children}
+          </ColorModeProvider>
         </NextIntlClientProvider>
         {process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID && (
           <Script defer src={process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL} data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID} />

@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
-import { theme, withAlpha, gradientCss } from "@/config/theme";
+import { colors, withAlpha, gradientCss } from "@/config/theme";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -21,7 +21,7 @@ export default async function Image({ params }) {
                 style={{
                     width: "1200px",
                     height: "630px",
-                    background: theme.colors.background,
+                    background: colors.background,
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
@@ -40,7 +40,7 @@ export default async function Image({ params }) {
                         transform: "translateX(-50%)",
                         width: "900px",
                         height: "500px",
-                        background: `radial-gradient(ellipse, ${withAlpha("accent-deep", 0.18)} 0%, transparent 65%)`,
+                        background: `radial-gradient(ellipse, ${withAlpha("accent", 0.18)} 0%, transparent 65%)`,
                         pointerEvents: "none",
                     }}
                 />
@@ -55,7 +55,7 @@ export default async function Image({ params }) {
                         borderRadius: "999px",
                         border: `1px solid ${withAlpha("contrast", 0.1)}`,
                         background: withAlpha("contrast", 0.05),
-                        color: theme.colors.accent,
+                        color: colors.accent,
                         fontSize: "13px",
                         fontWeight: "700",
                         letterSpacing: "0.15em",
@@ -71,7 +71,7 @@ export default async function Image({ params }) {
                     style={{
                         fontSize: "76px",
                         fontWeight: "800",
-                        color: theme.colors.contrast,
+                        color: colors.contrast,
                         lineHeight: 1.05,
                         textAlign: "center",
                         marginBottom: "12px",

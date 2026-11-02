@@ -5,9 +5,14 @@ import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import Logo from './Logo';
 import LanguageSwitcher from './LanguageSwitcher';
+import ColorModeSwitcher from './ColorModeSwitcher';
+import { COLOR_MODE_ATTRIBUTE } from '@/config/theme';
 import { headerNav } from '@/config/pages';
 
-const Header = () => {
+// `colorMode` pins the header to a mode while it floats transparently over the first section
+// (see Page.jsx): over a hero that stays dark, the navigation must stay light as well.
+// Once scrolled (or with the mobile menu open) the header has its own background and follows the site.
+const Header = ({ colorMode }) => {
     const t = useTranslations('Nav');
     const tHeader = useTranslations('Header');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -42,9 +47,12 @@ const Header = () => {
     // Generated from the `nav` entries in config/pages.js; `Link` adds the language prefix automatically.
     const navLinks = headerNav().map((item) => ({ href: item.href, text: t(item.label) }));
 
+    const isFloating = !isScrolled && !isMenuOpen;
+    const modeAttribute = colorMode && isFloating ? { [COLOR_MODE_ATTRIBUTE]: colorMode } : {};
+
     return (
         <>
-            <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${isScrolled || isMenuOpen ? 'bg-background/70 backdrop-blur-lg border-contrast/10' : 'bg-transparent border-transparent'}`}>
+            <header {...modeAttribute} className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${isScrolled || isMenuOpen ? 'bg-background/70 backdrop-blur-lg border-contrast/10' : 'bg-transparent border-transparent'}`}>
                 <div className="container mx-auto px-6 py-4">
                     <div className="flex justify-between items-center">
                         <Link href="/" className="flex items-center space-x-3" onClick={() => isMenuOpen && setIsMenuOpen(false)}>
@@ -59,6 +67,7 @@ const Header = () => {
                                 </Link>
                             ))}
                             <LanguageSwitcher variant="compact" className="ml-2" />
+                            <ColorModeSwitcher variant="compact" className="!ml-3" />
                         </nav>
 
                         {/* Mobile Menu Button */}
@@ -99,7 +108,10 @@ const Header = () => {
                         className={`mt-8 transition-all duration-500 ease-out ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
                         style={{ transitionDelay: `${150 + navLinks.length * 75}ms` }}
                     >
-                        <LanguageSwitcher variant="menu" />
+                        <div className="flex flex-col items-center gap-4">
+                            <LanguageSwitcher variant="menu" />
+                            <ColorModeSwitcher variant="menu" />
+                        </div>
                     </div>
                 </nav>
             </div>

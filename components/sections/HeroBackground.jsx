@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
-import { theme, gradientCss } from '@/config/theme';
+import { colors, colorVar, gradientVar } from '@/config/theme';
 
 /**
  * Background of the hero section, configured in config/pages.js via `background`:
@@ -29,9 +29,9 @@ export default function HeroBackground({ background, alt }) {
         case 'image':
             return <Image alt={alt} fill priority src={media.src} className="object-cover" />;
         case 'gradient':
-            return <div className="absolute inset-0" style={{ background: background.css ?? gradientCss(background.gradient, background.direction) }} />;
+            return <div className="absolute inset-0" style={{ background: background.css ?? gradientVar(background.gradient, background.direction) }} />;
         case 'color':
-            return <div className="absolute inset-0" style={{ background: theme.colors[background.color] ?? background.color }} />;
+            return <div className="absolute inset-0" style={{ background: colors[background.color] ? colorVar(background.color) : background.color }} />;
         default:
             throw new Error(`Unknown hero background type "${background.type}" in config/pages.js (use video, image, gradient or color).`);
     }

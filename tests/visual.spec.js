@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { routing } from '../i18n/routing';
+import { colorModes, staticColorMode, followsSystemColorMode, hasColorModeToggle, COLOR_MODE_STORAGE_KEY } from '../config/theme';
 
 /**
- * Full-page screenshots of every page in every language, desktop and mobile.
+ * Full-page screenshots of every page in every language and colour mode, desktop and mobile.
  *
  *   npm run visual:update   records the baseline into .snapshots/
  *   npm run visual          compares the current build against the baseline
@@ -60,15 +61,29 @@ async function scrollThroughPage(page) {
     });
 }
 
-for (const locale of routing.locales) {
-    for (const { name, path } of pages) {
-        test(`${name} (${locale})`, async ({ page }, testInfo) => {
-            await page.goto(localizedPath(path, locale), { waitUntil: 'networkidle' });
-            await page.addStyleTag({ content: NEUTRALISE_CSS });
-            await page.waitForTimeout(INTRO_ANIMATION_MS);
-            await scrollThroughPage(page);
+// Colour modes to capture (config/theme.js): every configured mode when the browser decides
+// (OS preference and/or toggle), otherwise just the fixed one.
+const modes = followsSystemColorMode || hasColorModeToggle ? colorModes : [staticColorMode];
 
-            await expect(page).toHaveScreenshot(`${name}-${locale}-${testInfo.project.name}.png`, { fullPage: true });
-        });
+// Puts the site into `mode` the way a visitor would get there: via the OS preference, or,
+// for a fixed default with a toggle, via a stored choice.
+async function useColorMode(page, mode) {
+    if (followsSystemColorMode) await page.emulateMedia({ colorScheme: mode });
+    else if (hasColorModeToggle) await page.addInitScript(([key, value]) => localStorage.setItem(key, value), [COLOR_MODE_STORAGE_KEY, mode]);
+}
+
+for (const locale of routing.locales) {
+    for (const mode of modes) {
+        for (const { name, path } of pages) {
+            test(`${name} (${locale}, ${mode})`, async ({ page }, testInfo) => {
+                await useColorMode(page, mode);
+                await page.goto(localizedPath(path, locale), { waitUntil: 'networkidle' });
+                await page.addStyleTag({ content: NEUTRALISE_CSS });
+                await page.waitForTimeout(INTRO_ANIMATION_MS);
+                await scrollThroughPage(page);
+
+                await expect(page).toHaveScreenshot(`${name}-${locale}-${mode}-${testInfo.project.name}.png`, { fullPage: true });
+            });
+        }
     }
 }

@@ -5,7 +5,7 @@ import AnimatedCTAButton from '@/components/ui/AnimatedButton';
 import HeroBackground from './HeroBackground';
 import { motion } from "framer-motion"
 import { useTranslations } from 'next-intl';
-import { withAlpha } from '@/config/theme';
+import { colorVar, colorModeAttribute, HERO_COLOR_MODE } from '@/config/theme';
 
 /**
  * Options in config/pages.js:
@@ -13,8 +13,10 @@ import { withAlpha } from '@/config/theme';
  *   overlay     tint between background and content: { color: 'background', opacity: 0.5 } (default), or false
  *   logo        show the logo above the title (default true)
  *   ctaHref     where the button scrolls to (default '#intro')
+ *   colorMode   'dark' (default): the hero keeps the dark palette in both colour modes, which suits
+ *               dark footage; 'light' likewise; 'auto' follows the site. Ignored when the palette isn't configured.
  */
-const Hero = ({ id = 'hero', namespace = 'Hero', background, overlay = { color: 'background', opacity: 0.5 }, logo = true, ctaHref = '#intro' }) => {
+const Hero = ({ id = 'hero', namespace = 'Hero', background, overlay = { color: 'background', opacity: 0.5 }, logo = true, ctaHref = '#intro', colorMode = HERO_COLOR_MODE }) => {
     const t = useTranslations(namespace);
 
     const heroText = t('title');
@@ -22,12 +24,12 @@ const Hero = ({ id = 'hero', namespace = 'Hero', background, overlay = { color: 
     const heroChars = Array.from(heroText);
 
     return (
-        <section id={id} className="relative h-screen w-full">
+        <section id={id} className="relative h-screen w-full" {...colorModeAttribute(colorMode)}>
             <div className="hero-background w-full h-full absolute">
                 <HeroBackground background={background} alt={t('backgroundAlt')} />
             </div>
             {overlay && (
-                <div className="absolute inset-0 z-10" style={{ backgroundColor: withAlpha(overlay.color ?? 'background', overlay.opacity ?? 0.5) }}></div>
+                <div className="absolute inset-0 z-10" style={{ backgroundColor: colorVar(overlay.color ?? 'background', overlay.opacity ?? 0.5) }}></div>
             )}
             <div className="relative h-full w-full flex flex-col items-center justify-center text-center z-20 px-6">
 

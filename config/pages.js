@@ -20,6 +20,8 @@
 //                footer  show in the footer: true (default, main link row), false, or 'legal' (small print row)
 //   ...        any other keys are passed to the section component as props
 
+import { hasColorModeToggle } from './theme.js';
+
 export const pages = {
     home: {
         path: '/',
@@ -40,6 +42,7 @@ export const pages = {
                 // background: { type: 'gradient', css: 'radial-gradient(circle at top, #1e293b, #0D1117)' },
                 // background: { type: 'color', color: 'surface' },
                 overlay: { color: 'background', opacity: 0.5 }, // tint over the background; `false` to disable
+                colorMode: 'dark',                              // keep the dark palette in both colour modes (dark footage); 'auto' follows the site
                 ctaHref: '#intro',                              // where the button scrolls to
             },
             { type: 'intro' },
@@ -134,8 +137,11 @@ export const pages = {
         metadata: 'Metadata.Privacy',
         type: 'legal',
         namespace: 'Privacy',
-        // The Umami paragraph is only rendered when analytics is enabled (same condition as the script in the layout).
+        // The Umami section is only rendered when analytics is enabled (same condition as the script in the layout).
         extraSections: process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID ? ['umami'] : [],
+        // The note on the colour-mode setting (localStorage) joins section 3, "Data collection", only
+        // when the dark/light toggle is enabled in config/theme.js; without it nothing is stored.
+        extraParagraphs: hasColorModeToggle ? { 2: ['colorMode'] } : {},
         nav: { label: 'privacy', header: false, footer: 'legal' },
     },
 };

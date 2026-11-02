@@ -14,7 +14,7 @@ const Lab = ({ id = 'lab', namespace = 'Lab', url = requireProp('lab', 'url', "'
             <p className="text-lg text-muted mt-6 max-w-3xl mx-auto">
                 {t('text')}
             </p>
-            <a href={url} target="_blank" rel="noopener noreferrer" className="mt-8 inline-block bg-primary text-contrast px-8 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all duration-300 shadow-lg">{t('cta')}</a>
+            <a href={url} target="_blank" rel="noopener noreferrer" className="mt-8 inline-block bg-primary text-on-brand px-8 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all duration-300 shadow-lg">{t('cta')}</a>
         </div>
     </section>
     );

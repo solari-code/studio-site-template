@@ -2,6 +2,7 @@ import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import Logo from './Logo';
 import LanguageSwitcher from './LanguageSwitcher';
+import ColorModeSwitcher from './ColorModeSwitcher';
 import { siteConfig } from '@/config/site';
 import { footerNav, legalNav } from '@/config/pages';
 import { getIcon } from '@/config/icons';
@@ -42,7 +43,10 @@ const Footer = () => {
                             <Link key={item.href} href={item.href} className="hover:text-contrast transition-colors">{t(item.label)}</Link>
                         ))}
                     </div>
-                    <LanguageSwitcher variant="links" />
+                    <div className="flex flex-wrap justify-center items-center gap-x-4 gap-y-1">
+                        <LanguageSwitcher variant="links" />
+                        <ColorModeSwitcher variant="links" />
+                    </div>
                     <p>&copy; {year} {siteConfig.name}</p>
                 </div>
             </div>

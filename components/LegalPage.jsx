@@ -11,17 +11,25 @@ import { pages } from '@/config/pages';
  * an array of `{ title, paragraphs: [] }`. Paragraphs may use <strong>, <br></br>,
  * <impressum>…</impressum> (link to the Impressum) and the placeholders {name}, {phone}, {email}.
  *
- * `page.extraSections` lists keys of additional `{ title, paragraphs }` objects in the namespace
- * that are rendered after the regular sections, e.g. for content that depends on configuration.
+ * Content that depends on configuration lives in separate keys of the namespace:
+ * `page.extraSections` lists keys of additional `{ title, paragraphs }` objects rendered after the
+ * regular sections; `page.extraParagraphs` maps a section index to keys of `{ paragraphs }` objects
+ * whose paragraphs are appended to that section (e.g. `{ 2: ['colorMode'] }`).
  */
 const LegalPage = ({ page }) => {
-    const { namespace, extraSections = [] } = page;
+    const { namespace, extraSections = [], extraParagraphs = {} } = page;
     const t = useTranslations(namespace);
 
     // Message paths of all sections to render, in order: sections.0, sections.1, ..., then the extras
     const sectionPaths = [
         ...t.raw('sections').map((_, i) => `sections.${i}`),
         ...extraSections,
+    ];
+
+    // Message paths of a section's paragraphs, followed by the extra paragraphs configured for it
+    const paragraphPaths = (path, index) => [
+        ...t.raw(`${path}.paragraphs`).map((_, j) => `${path}.paragraphs.${j}`),
+        ...(extraParagraphs[index] ?? []).flatMap((key) => t.raw(`${key}.paragraphs`).map((_, j) => `${key}.paragraphs.${j}`)),
     ];
 
     const richOptions = {
@@ -48,8 +56,8 @@ const LegalPage = ({ page }) => {
                         {sectionPaths.map((path, i) => (
                             <section key={path} className="space-y-6">
                                 <h2 className={`text-2xl font-semibold text-contrast ${i > 0 || t('note') ? 'mt-8' : ''}`}>{t(`${path}.title`)}</h2>
-                                {t.raw(`${path}.paragraphs`).map((_, j) => (
-                                    <p key={j}>{t.rich(`${path}.paragraphs.${j}`, richOptions)}</p>
+                                {paragraphPaths(path, i).map((paragraph) => (
+                                    <p key={paragraph}>{t.rich(paragraph, richOptions)}</p>
                                 ))}
                             </section>
                         ))}

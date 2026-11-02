@@ -38,6 +38,8 @@ export default defineConfig({
     use: {
         baseURL: `http://127.0.0.1:${PORT}`,
         launchOptions,
+        // Default OS preference; tests/visual.spec.js switches it per colour mode.
+        colorScheme: 'dark',
     },
     projects: [
         {

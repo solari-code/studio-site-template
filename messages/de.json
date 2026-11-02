@@ -49,6 +49,11 @@
     "LanguageSwitcher": {
         "label": "Sprache"
     },
+    "ColorModeSwitcher": {
+        "label": "Farbmodus",
+        "dark": "Dunkler Modus",
+        "light": "Heller Modus"
+    },
     "Hero": {
         "title": "ideen, die bleiben.",
         "cta": "Schau dich um",
@@ -419,6 +424,11 @@
                 ]
             }
         ],
+        "colorMode": {
+            "paragraphs": [
+                "<strong>Lokaler Speicher (Farbmodus)</strong><br></br>Diese Website kann in einem dunklen oder hellen Farbmodus angezeigt werden. Wenn Sie über den Schalter im Kopf- oder Fußbereich einen Modus wählen, wird Ihre Auswahl im lokalen Speicher Ihres Browsers (localStorage, Eintrag „color-mode“) gespeichert, damit die Website bei späteren Besuchen Ihren bevorzugten Modus beibehält. Der Eintrag enthält ausschließlich das Wort „dark“ oder „light“, wird weder an uns noch an Dritte übermittelt und nicht zu Ihrer Identifizierung oder Nachverfolgung verwendet. Die Speicherung ist unbedingt erforderlich, um die von Ihnen ausdrücklich gewünschte Funktion bereitzustellen; eine Einwilligung ist daher nicht erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG). Rechtsgrundlage einer damit verbundenen Verarbeitung ist unser berechtigtes Interesse an einer Website, die Ihre Darstellungspräferenz berücksichtigt (Art. 6 Abs. 1 lit. f DSGVO). Sie können den Eintrag jederzeit über die Website-Daten Ihres Browsers löschen; die Website folgt dann wieder der Einstellung Ihres Betriebssystems."
+            ]
+        },
         "umami": {
             "title": "4. Webanalyse mit Umami",
             "paragraphs": [

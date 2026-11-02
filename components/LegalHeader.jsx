@@ -14,7 +14,7 @@ const LegalHeader = () => {
                     <Logo className="h-8 w-auto text-contrast" />
                 </Link>
                 <Link href="/">
-                    <AnimatedCTAButton className="text-contrast font-medium">{t('backHome')}</AnimatedCTAButton>
+                    <AnimatedCTAButton className="font-medium">{t('backHome')}</AnimatedCTAButton>
                 </Link>
             </div>
         </header>

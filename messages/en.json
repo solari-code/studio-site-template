@@ -49,6 +49,11 @@
     "LanguageSwitcher": {
         "label": "Language"
     },
+    "ColorModeSwitcher": {
+        "label": "Color mode",
+        "dark": "Dark mode",
+        "light": "Light mode"
+    },
     "Hero": {
         "title": "ideas, built to last.",
         "cta": "Take a look",
@@ -419,6 +424,11 @@
                 ]
             }
         ],
+        "colorMode": {
+            "paragraphs": [
+                "<strong>Local storage (color mode)</strong><br></br>This website can be displayed in a dark or a light color mode. If you choose a mode using the switch in the header or footer, your choice is stored in your browser's local storage (localStorage, entry \"color-mode\") so that the site keeps your preferred mode on later visits. The entry contains only the word \"dark\" or \"light\", is not transmitted to us or to third parties, and is not used to identify or track you. Storing it is strictly necessary to provide the function you explicitly requested, so no consent is required (Section 25 (2) No. 2 TDDDG); the legal basis for any related processing is our legitimate interest in a website that respects your display preference (Art. 6 (1) (f) GDPR). You can delete the entry at any time via your browser's site data; the site then follows your operating system's setting again."
+            ]
+        },
         "umami": {
             "title": "4. Web analytics with Umami",
             "paragraphs": [

@@ -54,7 +54,7 @@ const Work = ({ id = 'work', namespace = 'Work', projects = requireProp('work', 
                 <h3 className="text-3xl font-bold text-contrast mb-4">{item.title}</h3>
                 <p className="text-muted mb-6">{item.description}</p>
                 <div className="flex flex-wrap gap-2 mb-6">
-                    {item.tags.map(tag => <span key={tag} className="bg-accent-deep/10 text-accent text-sm font-medium px-3 py-1 rounded-full">{tag}</span>)}
+                    {item.tags.map(tag => <span key={tag} className="bg-accent/10 text-accent text-sm font-medium px-3 py-1 rounded-full">{tag}</span>)}
                 </div>
                 {item.quote && (<blockquote className="border-l-4 border-secondary pl-4 italic text-muted">{item.quote}</blockquote>)}
                 {item.client && (<p className="text-contrast font-semibold mt-4">- {item.client}</p>)}
@@ -128,7 +128,7 @@ const Work = ({ id = 'work', namespace = 'Work', projects = requireProp('work', 
                 </div>
 
                 <div className="flex justify-center mt-8 space-x-4 items-center">
-                    <button onClick={() => paginate(-1)} aria-label={t('previous')} className="bg-background p-2 rounded-full text-contrast hover:bg-secondary transition-colors">
+                    <button onClick={() => paginate(-1)} aria-label={t('previous')} className="bg-background p-2 rounded-full text-contrast hover:bg-secondary hover:text-on-brand transition-colors">
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
                     </button>
                     <div className="flex space-x-2">
@@ -136,7 +136,7 @@ const Work = ({ id = 'work', namespace = 'Work', projects = requireProp('work', 
                             <button key={index} onClick={() => showSlide(index)} aria-label={t('goTo', { number: index + 1 })} className={`w-3 h-3 rounded-full transition-colors ${workIndex === index ? 'bg-foreground' : 'bg-muted/50 hover:bg-muted'}`}></button>
                         ))}
                     </div>
-                    <button onClick={() => paginate(1)} aria-label={t('next')} className="bg-background p-2 rounded-full text-contrast hover:bg-secondary transition-colors">
+                    <button onClick={() => paginate(1)} aria-label={t('next')} className="bg-background p-2 rounded-full text-contrast hover:bg-secondary hover:text-on-brand transition-colors">
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
                     </button>
                 </div>
