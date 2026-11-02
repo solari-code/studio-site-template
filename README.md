@@ -181,4 +181,4 @@ That's it: routes, the language switcher, metadata, `hreflang` links and the sit
 
 ## License
 
-MIT, see [LICENSE](LICENSE). The bundled Inter font is under the SIL Open Font License.
+MIT, see [LICENSE](LICENSE). The bundled fonts in `app/fonts/` (Inter, Manrope, DM Sans, Fraunces, Lora) are under the SIL Open Font License; each licence sits next to its font file.
