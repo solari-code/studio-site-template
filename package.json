@@ -12,7 +12,9 @@
     "visual": "playwright test",
     "visual:update": "playwright test --update-snapshots",
     "check:config": "node scripts/check-config.mjs",
-    "check": "npm run check:config && npm run check:messages"
+    "check": "npm run check:config && npm run check:messages",
+    "setup": "node scripts/setup/index.mjs",
+    "test:setup": "node --test \"scripts/setup/tests/*.test.mjs\""
   },
   "dependencies": {
     "framer-motion": "^12.23.0",
@@ -26,6 +28,7 @@
     "swiper": "^11.2.10"
   },
   "devDependencies": {
+    "@clack/prompts": "^1.8.1",
     "@eslint/eslintrc": "^3",
     "@playwright/test": "^1.64.0",
     "autoprefixer": "^10.4.21",

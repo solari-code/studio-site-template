@@ -27,7 +27,7 @@ export const sans = localFont({
     display: 'swap',
 });
 
-// Optional second family, e.g. for headings; then set `fonts.heading: 'var(--font-display)'` in config/theme.js.
+// Optional second family, e.g. for headings; then set `fonts.heading: { family: 'var(--font-display)', fallback: 'serif' }` in config/theme.js.
 // export const display = localFont({ src: '../app/fonts/Display.woff2', variable: '--font-display' });
 
 // Class names that define the font CSS variables; applied to <body> in the root layout.

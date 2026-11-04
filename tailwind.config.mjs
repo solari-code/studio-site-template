@@ -29,9 +29,10 @@ export default {
   ],
   theme: {
     extend: {
+      // Font roles from config/theme.js: `font-sans` is the body role, `font-heading` the heading role.
       fontFamily: {
-        sans: [theme.fonts.body, 'sans-serif'],
-        heading: [theme.fonts.heading, 'sans-serif'],
+        sans: [theme.fonts.body.family, theme.fonts.body.fallback],
+        heading: [theme.fonts.heading.family, theme.fonts.heading.fallback],
       },
       colors: colorUtilities,
       backgroundImage: gradientUtilities,

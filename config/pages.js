@@ -12,6 +12,8 @@
 // Section:
 //   type       which component renders it; see components/sections/index.js for the available types
 //   id         anchor (`/#services`) and React key; defaults to the type. Must be unique per page.
+//   enabled    set to false to switch a section off (not rendered, not in the navigation) while keeping
+//              its entry for later; default true
 //   namespace  messages namespace with the section's texts; defaults to the type's own namespace.
 //              Set it when the same type is used twice (e.g. two FAQ sections).
 //   nav        adds the section to the navigation:
@@ -68,7 +70,7 @@ export const pages = {
                     { id: 'yoga', image: '/images/work/project-4.png', liveUrl: 'https://example.com/' },
                 ],
             },
-            // { type: 'lab', url: 'https://example.com' },
+            { type: 'lab', url: 'https://example.com', enabled: false },
             {
                 type: 'process',
                 nav: { label: 'process' },
@@ -118,7 +120,7 @@ export const pages = {
                 // Texts from `Starter.Roadmap.steps.<id>`.
                 steps: ['request', 'discovery', 'kickoff', 'launch'],
             },
-            // { type: 'starter-tech-specs', specs: ['tech', 'speed', 'delivery', 'deployment'] },
+            { type: 'starter-tech-specs', specs: ['tech', 'speed', 'delivery', 'deployment'], enabled: false },
             { type: 'starter-faq', id: 'faq' },
             { type: 'starter-contact', id: 'contact' },
         ],
@@ -148,9 +150,13 @@ export const pages = {
 
 // --- Helpers -------------------------------------------------------------
 
-export const isEnabled = (page) => page.enabled !== false;
+// Pages and sections are on unless they say `enabled: false`.
+export const isEnabled = (entry) => entry.enabled !== false;
 
 export const enabledPages = () => Object.values(pages).filter(isEnabled);
+
+// The sections of a page that are switched on, in order (legal pages have none).
+export const enabledSections = (page) => (page.sections ?? []).filter(isEnabled);
 
 // Section id (defaults to the type)
 export const sectionId = (section) => section.id ?? section.type;
@@ -165,7 +171,7 @@ export function navItems() {
 
     for (const page of enabledPages()) {
         if (page.nav) add(page.path, page.nav);
-        for (const section of page.sections ?? []) {
+        for (const section of enabledSections(page)) {
             if (section.nav) add(`${page.path}#${sectionId(section)}`, section.nav);
         }
     }

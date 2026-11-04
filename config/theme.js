@@ -102,10 +102,12 @@ export const theme = {
     // Scroll-aware headings blend from one gradient into another while scrolling into view.
     scrollGradient: { from: 'highlight', to: 'highlight-alt' },
 
-    // Font roles, referencing the CSS variables defined in `config/fonts.js`.
+    // Font roles. `family` references a CSS variable defined in `config/fonts.js`; `fallback` is the
+    // generic family used until the font has loaded and for the few glyphs it doesn't cover
+    // (`sans-serif`, `serif`, `monospace`), so a serif heading font should fall back to `serif`.
     fonts: {
-        body: 'var(--font-sans)',
-        heading: 'var(--font-sans)',
+        body: { family: 'var(--font-sans)', fallback: 'sans-serif' },
+        heading: { family: 'var(--font-sans)', fallback: 'sans-serif' },
     },
 };
 

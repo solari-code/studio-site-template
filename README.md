@@ -17,27 +17,43 @@ Open http://localhost:3000.
 
 | Script | What it does |
 |---|---|
+| `npm run setup` | interactive setup assistant: brand, theme, languages, pages (see below) |
 | `npm run build` | production build |
 | `npm run lint` | ESLint |
 | `npm run check` | runs both checks below |
 | `npm run check:config` | validates `config/` against the messages and `public/` (unknown section types or icons, missing files, ids without texts, duplicate anchors, …). Exits with 1 on errors |
 | `npm run check:messages` | compares the language files and warns about missing or extra texts (never fails; missing texts fall back to English at runtime) |
 | `npm run visual` / `visual:update` | visual regression screenshots, see below |
+| `npm run test:setup` | unit tests of the setup assistant (`node --test`) |
 
 No environment variables are needed to run the site. To make the contact forms actually send mail through [Resend](https://resend.com), copy `.env.example` to `.env.local` and set a real `RESEND_API_KEY` and `NOTIFICATION_EMAIL`; without them, submitting a form shows an error message. Analytics (Umami) only loads when `NEXT_PUBLIC_UMAMI_WEBSITE_ID` is set; when it is, the privacy policy automatically shows a paragraph about Umami.
 
 ## Setting up a new site
 
-Clone the template once per client, then work through `config/` top to bottom:
+Clone the template once per client, commit, then:
 
-1. **`config/site.js`** – name, URL, contact details, social links, favicons, link-preview image, notification-mail subjects.
-2. **`config/theme.js`** – colours (dark and/or light palette), gradients, font roles. **`config/fonts.js`** – the font files (see the comments there for local, static-weight and Google fonts).
-3. **`config/logo.jsx`** – replace the placeholder mark with the client's logo (SVG or `<img>`). Swap the favicons in `public/favicon/` and `app/favicon.ico`, and the preview image `public/og-image-2.png`.
-4. **`config/pages.js`** – compose the pages: which sections in which order, their data, the hero background, the navigation. Disable pages you don't need (`enabled: false`).
-5. **`config/icons.js`** – only if a section needs an icon that isn't registered yet.
-6. **`public/images/`** – the images and videos referenced from `config/pages.js`.
-7. **`messages/en.json`, `messages/de.json`** – all texts, incl. page titles/descriptions (`Metadata`) and the legal pages (`Impressum`, `Privacy`). Remove the languages you don't need in `i18n/routing.js`.
-8. `npm run check` and `npm run build`.
+1. **`npm run setup`** – the assistant asks for the brand basics, theme and fonts, languages and pages/sections and writes them into the config (details below). Everything it does can also be done by hand in `config/` and `i18n/routing.js`.
+2. **`config/logo.jsx`** – replace the placeholder mark with the client's logo (SVG or `<img>`). Swap the favicons in `public/favicon/` and `app/favicon.ico`, and the preview image `public/og-image-2.png`.
+3. **`public/images/`** – the images and videos referenced from `config/pages.js` (hero footage, project images, portrait).
+4. **`messages/<language>.json`** – all texts, incl. page titles/descriptions (`Metadata`) and the legal pages (`Impressum`, `Privacy`). A language added by the assistant starts as a copy of the default language's file.
+5. **`.env.local`** – copy `.env.example` and set `RESEND_API_KEY` and `NOTIFICATION_EMAIL` for the contact forms.
+6. Only if needed: **`config/icons.js`** (an icon that isn't registered yet), **`config/site.js`** (favicons, preview image, mail subjects, remote image hosts), **`config/fonts.js`** (a font that isn't bundled).
+7. `npm run check` and `npm run build`.
+
+### Setup assistant
+
+`npm run setup` walks through four steps; each can be skipped, and every question shows the current value from the config as its default, so running it again later continues from what is there instead of starting over.
+
+- **Brand & contact** → `config/site.js`: site name and URL, contact email, form sender, phone, WhatsApp number, social links.
+- **Theme & fonts** → `config/theme.js`, `config/fonts.js`: keep the current theme or start from an example theme (Nova – the template default, Editorial, Atelier, Dusk; defined in `scripts/setup/themes.mjs`), choose the colour-mode setup (dark only, light only, system preference with or without a switch, …), optionally adjust the main colours per palette, and pick body and heading fonts from the bundled families.
+- **Languages** → `i18n/routing.js`, `messages/`: default language and additional languages. A new language gets `messages/<code>.json` as a copy of the default language's file, to be translated (`npm run check:messages` lists what is left). A removed language keeps its messages file unless you say otherwise.
+- **Pages & sections** → `config/pages.js`: pages on/off, sections on/off (`enabled: false`, the entry stays) and their order, header/footer navigation, and the section options that are data rather than text (hero background and colour mode, CTA target, lab URL, about image, pricing-card mode). A section that goes into the navigation without a `Nav.<id>` text gets one: you are asked for it, and it is written to the default language's messages file (the one exception to "texts stay manual"); the other languages show it in the default language until translated.
+
+Wrong values (a hex colour, URL, email, language code, a file that isn't in `public/`) are rejected right away and asked again. At the end the assistant shows a summary of every change per file; **nothing is written before you confirm**. It then runs `npm run check` and lists what is still to be done by hand (logo, favicons, images, texts, `.env.local`, …). It warns at the start if the working tree has uncommitted changes, because git is the way to undo its edits.
+
+The config files are edited in place, not regenerated: only the values you change are touched, and every comment, blank line and the formatting around them stay. Texts, images and the logo are never touched (apart from the navigation text above).
+
+To add an example theme, add an entry to `themes` in `scripts/setup/themes.mjs` (both palettes, colour-mode setup, fonts); `npm run test:setup` checks that it is complete and that text and brand colours have enough contrast in both modes.
 
 ## Pages and sections
 
@@ -66,7 +82,7 @@ impressum: { path: '/impressum', type: 'legal', namespace: 'Impressum', nav: { l
 - **`nav`** puts a section (or a page) into the navigation: `label` is a key in the `Nav` messages; `header: false` hides it from the header, `footer: false` from the footer, `footer: 'legal'` puts it into the footer's small-print row. Header and footer are generated from this, nothing is hardcoded.
 - **Data** (items, projects, steps, cards, criteria, images, links) sits on the section entry and is passed to the component as props. The texts live in the messages under the section's namespace, keyed by `id` (e.g. `Services.items.websites`). `namespace` overrides the default namespace when the same type is used twice.
 - **Icons** are referenced by name (`icon: 'rocket'`) and registered in `config/icons.js`: custom SVG paths or anything from [lucide](https://lucide.dev), imported there once.
-- **`enabled: false`** switches a page off: 404, not in the sitemap, not in the navigation. **`previewImage: false`** leaves the link-preview image to a route's own `opengraph-image` file (as for `/starter`).
+- **`enabled: false`** switches a page off (404, not in the sitemap, not in the navigation) or a section off (not rendered, not in the navigation) while keeping its entry for later; the template ships `lab` and `starter-tech-specs` switched off this way. **`previewImage: false`** leaves the link-preview image to a route's own `opengraph-image` file (as for `/starter`).
 - **Legal pages** use `type: 'legal'` with a messages `namespace` instead of sections; `extraSections` lists additional keys rendered after the regular sections (used for the Umami section), `extraParagraphs` maps a section index to keys whose paragraphs are appended to that section (used for the colour-mode note).
 
 A forgotten data prop, an unknown type or icon fails the build with a message that says what to add where; `npm run check:config` finds the same things (plus missing files and ids without texts) without building.
@@ -85,7 +101,7 @@ background: { type: 'color', color: 'surface' }                             // a
 
 ## Theme
 
-All colours live in `config/theme.js`. The palette is small on purpose: a few **base colours** per colour mode and a few **shades** derived from them by mixing, so a different palette is a change to a handful of values and everything else follows.
+All colours live in `config/theme.js`. The palette is small on purpose: a few **base colours** per colour mode and a few **shades** derived from them by mixing, so a different palette is a change to a handful of values and everything else follows. `npm run setup` can write one of four example themes (Nova, Editorial, Atelier, Dusk – `scripts/setup/themes.mjs`) into this file as a starting point.
 
 Base colours (`theme.colors.dark`, `theme.colors.light`):
 
@@ -126,7 +142,7 @@ Named gradients (`highlight`, `highlight-alt`, `highlight-mix`, `brand`, `cta`, 
 
 The root layout exposes every token as a CSS variable holding its colour channels (`--color-background: 13 17 23`), Tailwind generates its utilities from those variables (`bg-surface`, `text-accent`, `border-contrast/10`, `bg-gradient-highlight`), and components never use raw colour values. In plain CSS use `rgb(var(--color-background))` or, with alpha, `rgb(var(--color-contrast) / 0.1)`. For inline styles `config/theme.js` exports `colorVar(token, alpha?)` and `gradientVar(name, direction?)`, which build the same references; the server-rendered OG image, which can't use CSS variables, uses the static hex helpers (`colors`, `withAlpha()`, `gradientCss()`) with the palette of the default mode (the first one with `'system'`).
 
-Fonts are loaded in `config/fonts.js` (`next/font` needs literal arguments there, which is why they are not in `theme.js`) and assigned to the `body` and `heading` roles in `config/theme.js`.
+Fonts are loaded in `config/fonts.js` (`next/font` needs literal arguments there, which is why they are not in `theme.js`) and assigned to the `body` and `heading` roles in `config/theme.js`, each as `{ family: 'var(--font-…)', fallback: 'sans-serif' | 'serif' | … }`; the fallback is the generic family used until the font has loaded, so a serif heading font gets `serif`.
 
 ## Languages
 
@@ -138,6 +154,8 @@ All texts live in one JSON file per language in `messages/`, grouped by section 
 - Every page has a translated title and description, a canonical URL and `hreflang` links to all language versions, and the sitemap (`/sitemap.xml`) lists every page in every language, so search engines can send visitors to the right version.
 
 ### Adding a language
+
+`npm run setup` (step "Languages") does the following for you; by hand:
 
 1. Add the language code and its display name in `i18n/routing.js`:
    ```js
@@ -175,7 +193,7 @@ That's it: routes, the language switcher, metadata, `hreflang` links and the sit
 - `components/`: `Page` (renders a page from its config), `Header`, `Footer`, `LegalPage`, `ContactOverlay` + provider, `LanguageSwitcher`, `ColorModeSwitcher` + `ColorModeProvider` (`useColorMode`), `Logo`; `ui/` for buttons, gradient text, glows
 - `i18n/`: language list (`routing.js`), locale-aware links (`navigation.js`), message loading with fallback (`request.js`), SEO helpers incl. `pageMetadata` (`metadata.js`)
 - `middleware.js`: adds the language prefix to URLs
-- `scripts/`: `check-config.mjs`, `check-messages.mjs`
+- `scripts/`: `check-config.mjs`, `check-messages.mjs`; `setup/`: the setup assistant (`index.mjs`, one module per step in `steps/`, the example themes in `themes.mjs`, the comment-preserving config editor in `source.mjs`, tests in `tests/`)
 - `tests/visual.spec.js`, `playwright.config.js`: visual regression screenshots
 - `public/`: images, videos and favicons
 

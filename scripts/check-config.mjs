@@ -4,9 +4,11 @@
  *
  * - config/pages.js: section types exist, ids are unique per page, nav labels and metadata
  *   namespaces exist in the messages, section data (items, projects, steps, …) matches the
- *   messages, icons are registered, referenced images/videos exist
+ *   messages, icons are registered, referenced images/videos exist. Sections and pages that
+ *   are switched off (`enabled: false`) are listed but their data is not checked.
  * - config/site.js: social icons, favicons, preview image, form definitions
- * - config/theme.js: colour modes, shades, gradients and the scroll gradient reference existing tokens
+ * - config/theme.js: colour modes, shades, gradients and the scroll gradient reference existing tokens,
+ *   font roles reference families loaded in config/fonts.js
  *
  * Errors (things that would break or silently hide content) exit with code 1; warnings don't.
  * Run it with: npm run check:config
@@ -16,7 +18,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const { pages, sectionId, enabledPages } = await import(path.join(root, 'config', 'pages.js'));
+const { pages, sectionId, isEnabled } = await import(path.join(root, 'config', 'pages.js'));
 const { siteConfig } = await import(path.join(root, 'config', 'site.js'));
 const { theme, colors, colorModes, resolveColors } = await import(path.join(root, 'config', 'theme.js'));
 const { defaultLocale } = await import(path.join(root, 'i18n', 'routing.js'));
@@ -175,6 +177,7 @@ for (const [key, page] of Object.entries(pages)) {
         if (!sectionTypes.includes(section.type)) { error(`${sWhere}: unknown type "${section.type}" (available: ${sectionTypes.join(', ')})`); continue; }
         if (ids.has(id)) error(`${sWhere}: id "${id}" is used twice on this page`);
         ids.add(id);
+        if (!isEnabled(section)) continue; // switched off: only the type and the id are checked
         if (section.nav) checkMessageKey(`Nav.${section.nav.label}`, `${sWhere} nav`);
 
         const namespace = section.namespace ?? defaultNamespaces[section.type];
@@ -255,15 +258,28 @@ for (const mode of colorModes) {
 for (const [role, name] of Object.entries(theme.scrollGradient)) {
     if (!theme.gradients[name]) error(`scrollGradient.${role}: gradient "${name}" is not defined`);
 }
+
+// Font roles: `{ family, fallback }` per role, the family a CSS variable from config/fonts.js
+const fontsSource = (await readFile(path.join(root, 'config', 'fonts.js'), 'utf8')).replace(/^\s*\/\/.*$/gm, ''); // without comment lines
+const fontVariables = [...fontsSource.matchAll(/variable:\s*'(--font-[a-z0-9-]+)'/g)].map((m) => m[1]);
+for (const role of ['body', 'heading']) {
+    const font = theme.fonts?.[role];
+    if (!font || typeof font !== 'object') { error(`fonts.${role} must be an object { family, fallback }`); continue; }
+    const variable = /^var\((--font-[a-z0-9-]+)\)$/.exec(font.family ?? '')?.[1];
+    if (!variable) error(`fonts.${role}.family "${font.family}" must reference a CSS variable from config/fonts.js, e.g. 'var(--font-sans)'`);
+    else if (!fontVariables.includes(variable)) error(`fonts.${role}.family: "${variable}" is not defined in config/fonts.js (available: ${fontVariables.join(', ')})`);
+    if (!['sans-serif', 'serif', 'monospace', 'system-ui'].includes(font.fallback)) error(`fonts.${role}.fallback "${font.fallback}" must be a generic family (sans-serif, serif, monospace or system-ui)`);
+}
 const setup = colorModes.length < 2 ? `${colorModes[0]} only`
     : `${defaultMode === 'system' ? 'system preference' : `fixed ${defaultMode}`}${toggle ? ' + toggle' : ', no toggle'}`;
 console.log(`  ℹ colour modes: ${colorModes.join(', ')} (${setup})`);
 
-// Disabled pages
+// Disabled pages and sections
 for (const [key, page] of Object.entries(pages)) {
-    if (page.enabled === false) console.log(`  ℹ page "${key}" is disabled`);
+    if (!isEnabled(page)) console.log(`  ℹ page "${key}" is disabled`);
+    const off = (page.sections ?? []).filter((section) => !isEnabled(section)).map(sectionId);
+    if (off.length) console.log(`  ℹ page "${key}": disabled section(s) ${off.join(', ')}`);
 }
-void enabledPages;
 
 const summary = `${errors} error(s), ${warnings} warning(s)`;
 console.log(errors === 0 ? `\nConfig looks good (${summary}).` : `\n${summary}.`);
