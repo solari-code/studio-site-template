@@ -16,6 +16,7 @@ import Intro from './Intro';
 import Services from './Services';
 import Process from './Process';
 import Lab from './Lab';
+import LabProjects from './LabProjects';
 import About from './About';
 import Contact from './Contact';
 import StarterPackageHero from './starter-package/StarterPackageHero';
@@ -36,6 +37,9 @@ export const sectionComponents = {
     lab: Lab,
     about: About,
     contact: Contact,
+
+    // Lab page
+    'lab-projects': LabProjects,
 
     // Starter offer page
     'starter-hero': StarterPackageHero,

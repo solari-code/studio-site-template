@@ -385,8 +385,8 @@ describe('the real config files', () => {
         const f = await SourceFile.read(configFile('config/pages.js'));
         const index = pages.home.sections.findIndex((s) => s.type === 'work');
         f.assign(`pages.home.sections[${index}].enabled`, false);
-        const lab = pages.home.sections.findIndex((s) => s.type === 'lab');
-        f.remove(`pages.home.sections[${lab}].enabled`);
+        const specs = pages.starter.sections.findIndex((s) => s.type === 'starter-tech-specs');
+        f.remove(`pages.starter.sections[${specs}].enabled`);
         f.set('pages.home.sections[0].ctaHref', '#services');
         f.assign('pages.starter.enabled', false);
         const order = pages.home.sections.map((_, i) => i).reverse();
@@ -394,7 +394,7 @@ describe('the real config files', () => {
         const edited = await importFromTemp({ 'config/theme.js': null, 'config/pages.js': f.text }, 'config/pages.js');
         assert.deepEqual(edited.pages.home.sections.map((s) => s.type), pages.home.sections.map((s) => s.type).reverse());
         assert.equal(edited.pages.home.sections.find((s) => s.type === 'work').enabled, false);
-        assert.equal(edited.pages.home.sections.find((s) => s.type === 'lab').enabled, undefined);
+        assert.equal(edited.pages.starter.sections.find((s) => s.type === 'starter-tech-specs').enabled, undefined);
         assert.equal(edited.pages.home.sections.find((s) => s.type === 'hero').ctaHref, '#services');
         assert.equal(edited.pages.starter.enabled, false);
         assert.deepEqual(edited.enabledSections(edited.pages.home).map((s) => s.type), ['contact', 'about', 'process', 'lab', 'services', 'intro', 'hero']);

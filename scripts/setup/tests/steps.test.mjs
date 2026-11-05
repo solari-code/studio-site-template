@@ -16,7 +16,7 @@ const exists = (file) => access(file).then(() => true, () => false);
 let tmp;
 before(async () => {
     tmp = await mkdtemp(path.join(os.tmpdir(), 'setup-steps-'));
-    for (const dir of ['config', 'i18n', 'messages']) await cp(path.join(root, dir), path.join(tmp, dir), { recursive: true });
+    for (const dir of ['config', 'i18n', 'messages', 'content']) await cp(path.join(root, dir), path.join(tmp, dir), { recursive: true });
     await symlink(path.join(root, 'node_modules'), path.join(tmp, 'node_modules'), 'junction'); // i18n/routing.js imports next-intl
 });
 after(() => rm(tmp, { recursive: true, force: true }));
@@ -29,7 +29,7 @@ describe('state', () => {
         assert.equal(state.routing.defaultLocale, 'en');
         assert.deepEqual(state.messages.sort(), ['de', 'en']);
         assert.ok(state.icons.includes('rocket'));
-        assert.deepEqual(state.brandIcons, ['linkedin', 'github', 'instagram']);
+        assert.deepEqual(state.brandIcons, ['linkedin', 'github', 'instagram', 'npm']);
         assert.ok(state.theme.colors.dark);
         assert.ok(state.pages.home.sections.length > 0);
     });
@@ -97,6 +97,8 @@ describe('languages step', () => {
         assert.deepEqual(languages.todos(state, answers), [
             'Translate messages/fr.json (a copy of messages/en.json); `npm run check:messages` lists what is left.',
             'messages/de.json is kept but no longer used; delete it or add "de" back in i18n/routing.js.',
+            'The lab page texts content/lab/*/de.md are kept but no longer used; delete them or add "de" back in i18n/routing.js.',
+            'Lab pages: translate content/lab/<id>/en.md into content/lab/<id>/fr.md where you want them (until then the en text is shown; `npm run check:messages` lists them).',
         ]);
 
         const workspace = new Workspace(tmp);
@@ -109,6 +111,8 @@ describe('languages step', () => {
         assert.deepEqual(updated.routing.localeNames, { en: 'English', fr: 'Français' });
         assert.equal(await readFile(path.join(tmp, 'messages/fr.json'), 'utf8'), await readFile(path.join(tmp, 'messages/en.json'), 'utf8'));
         assert.ok(await exists(path.join(tmp, 'messages/de.json'))); // kept
+        assert.ok(await exists(path.join(tmp, 'content/lab/message-diff/de.md'))); // kept, unless asked
+        assert.ok(!(await exists(path.join(tmp, 'content/lab/message-diff/fr.md'))), 'a new language gets no markdown copies');
         assert.match(await readFile(path.join(tmp, 'i18n/routing.js'), 'utf8'), /\/\/ Shown in the language switcher\.\nexport const localeNames = \{\n    en: 'English',\n    fr: 'Français',\n\};/);
 
         // Re-run: make fr the default, bring de back (its file still exists), drop fr and delete its file.
@@ -128,5 +132,33 @@ describe('languages step', () => {
         assert.equal(final.routing.defaultLocale, 'de');
         assert.ok(!(await exists(path.join(tmp, 'messages/fr.json'))));
         assert.deepEqual(languages.changes(final, again), []);
+    });
+
+    test('a removed language\'s lab page texts are deleted only when asked, and never those of a language in use', async () => {
+        const dir = await mkdtemp(path.join(os.tmpdir(), 'setup-languages-'));
+        try {
+            for (const d of ['config', 'i18n', 'messages', 'content']) await cp(path.join(root, d), path.join(dir, d), { recursive: true });
+            await symlink(path.join(root, 'node_modules'), path.join(dir, 'node_modules'), 'junction');
+            const state = await loadState(dir);
+            assert.deepEqual(state.labContent, { de: ['content/lab/message-diff/de.md'], en: ['content/lab/message-diff/en.md'] });
+
+            const keep = { locales: ['en'], defaultLocale: 'en', localeNames: { en: 'English' }, deleteFiles: [], deleteContent: [] };
+            assert.deepEqual(languages.changes(state, keep).map((c) => [c.file, c.label]), [['i18n/routing.js', 'locales'], ['i18n/routing.js', 'localeNames']]);
+
+            const stray = { ...keep, deleteContent: ['en'] }; // en is still in use: nothing of it goes
+            assert.deepEqual(languages.changes(state, stray).filter((c) => c.label === 'deleted'), []);
+
+            const remove = { ...keep, deleteFiles: ['de'], deleteContent: ['de'] };
+            assert.deepEqual(languages.changes(state, remove).filter((c) => c.label === 'deleted').map((c) => c.file), ['messages/de.json', 'content/lab/message-diff/de.md']);
+            assert.deepEqual(languages.todos(state, remove), [], 'nothing left behind to mention');
+            const workspace = new Workspace(dir);
+            await languages.write(state, remove, workspace);
+            await workspace.commit();
+            assert.ok(!(await exists(path.join(dir, 'content/lab/message-diff/de.md'))));
+            assert.ok(await exists(path.join(dir, 'content/lab/message-diff/en.md')));
+            assert.deepEqual((await loadState(dir)).labContent, { en: ['content/lab/message-diff/en.md'] });
+        } finally {
+            await rm(dir, { recursive: true, force: true });
+        }
     });
 });

@@ -1,7 +1,4 @@
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import ContactOverlayProvider from '@/components/ContactOverlayProvider';
-import ScrollFadeProvider from '@/components/ui/ScrollFadeProvider';
+import SiteShell from '@/components/SiteShell';
 import { Section } from '@/components/sections';
 import { sectionId, enabledSections } from '@/config/pages';
 import { pinnedColorMode, HERO_COLOR_MODE } from '@/config/theme';
@@ -17,16 +14,10 @@ export default function Page({ page }) {
     const headerColorMode = first?.type === 'hero' ? pinnedColorMode(first.colorMode ?? HERO_COLOR_MODE) : undefined;
 
     return (
-        <ContactOverlayProvider>
-            <ScrollFadeProvider>
-                <Header colorMode={headerColorMode} />
-                <main>
-                    {sections.map((section) => (
-                        <Section key={sectionId(section)} config={section} />
-                    ))}
-                </main>
-                <Footer />
-            </ScrollFadeProvider>
-        </ContactOverlayProvider>
+        <SiteShell headerColorMode={headerColorMode}>
+            {sections.map((section) => (
+                <Section key={sectionId(section)} config={section} />
+            ))}
+        </SiteShell>
     );
 }

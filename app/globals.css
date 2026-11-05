@@ -125,3 +125,68 @@ textarea:-webkit-autofill {
     transition-delay: 0.75s;
   }
 }
+/* Code highlighting in the lab's markdown pages (components/lab/Markdown.jsx). The code is tokenised
+   while the page is built (highlight.js classes); the colours are theme tokens, so they follow the
+   palette and the colour mode. */
+.hljs-comment,
+.hljs-quote {
+  color: rgb(var(--color-muted));
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-meta .hljs-keyword,
+.hljs-doctag {
+  color: rgb(var(--color-secondary));
+}
+
+.hljs-string,
+.hljs-regexp,
+.hljs-addition,
+.hljs-meta .hljs-string {
+  color: rgb(var(--color-success));
+}
+
+.hljs-number,
+.hljs-literal,
+.hljs-symbol,
+.hljs-bullet {
+  color: rgb(var(--color-tertiary));
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-name {
+  color: rgb(var(--color-primary));
+}
+
+.hljs-built_in,
+.hljs-type,
+.hljs-title.class_,
+.hljs-attr,
+.hljs-attribute,
+.hljs-property,
+.hljs-selector-class,
+.hljs-selector-id {
+  color: rgb(var(--color-accent));
+}
+
+.hljs-variable,
+.hljs-template-variable,
+.hljs-params,
+.hljs-meta {
+  color: rgb(var(--color-contrast));
+}
+
+.hljs-deletion {
+  color: rgb(var(--color-error));
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: 600;
+}

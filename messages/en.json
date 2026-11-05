@@ -21,6 +21,10 @@
             "title": "Starter Package — A Professional Landing Page in One Week",
             "description": "A clean, fast landing page, designed, built and online in about a week. Fixed price of €499, with domain and hosting included for the first year."
         },
+        "Lab": {
+            "title": "Lab — Open Source, Packages & Experiments",
+            "description": "Side projects by {name}: open-source packages, small tools and experiments, built outside of client work."
+        },
         "Impressum": {
             "title": "Legal Notice",
             "description": "Legal notice (Impressum) of {name}: provider details, contact and liability information."
@@ -39,6 +43,7 @@
         "process": "Process",
         "about": "About",
         "contact": "Contact",
+        "lab": "Lab",
         "impressum": "Impressum",
         "privacy": "Privacy Policy"
     },
@@ -175,7 +180,110 @@
     "Lab": {
         "title": "From the <highlight>Lab</highlight>",
         "text": "Side projects and experiments: this is where I try out new tools and ideas before they show up in client work.",
-        "cta": "See the experiments"
+        "cta": "Explore the Lab",
+        "Overview": {
+            "badge": "Side projects",
+            "title": "The <highlight>Lab</highlight>",
+            "text": "Open-source packages, small tools and experiments I build outside of client work: to try out ideas, to scratch my own itch, or just for fun."
+        },
+        "Detail": {
+            "back": "All projects",
+            "untranslated": "This page hasn’t been translated yet, so it’s shown in {language}."
+        },
+        "viewProject": "View project",
+        "projects": {
+            "scroll-gradient": {
+                "title": "Scroll Gradient",
+                "description": "A tiny React component that blends one text gradient into another as the text scrolls into view. Extracted from this website.",
+                "tags": [
+                    "Open Source",
+                    "React",
+                    "Animation"
+                ]
+            },
+            "message-diff": {
+                "title": "message-diff",
+                "description": "A zero-config CLI that compares translation files and lists missing, extra and mismatched keys. Made for next-intl projects.",
+                "tags": [
+                    "CLI",
+                    "Node.js",
+                    "i18n"
+                ]
+            },
+            "type-specimens": {
+                "title": "Type Specimens",
+                "description": "A weekend experiment: generative posters for variable fonts, drawn in the browser. Every reload is a new poster.",
+                "tags": [
+                    "Experiment",
+                    "Typography",
+                    "Canvas"
+                ]
+            }
+        },
+        "links": {
+            "github": "GitHub",
+            "npm": "npm",
+            "demo": "Live demo"
+        }
+    },
+    "LabLandings": {
+        "scroll-gradient": {
+            "badge": "Open source · React",
+            "title": "Gradients that <highlight>follow the scroll</highlight>",
+            "subtitle": "A tiny React component that blends one text gradient into another while the text scrolls into view. No dependencies, no setup, just a wrapper around your text.",
+            "demoCta": "See it live",
+            "demo": {
+                "title": "See it live",
+                "text": "Scroll slowly: each line blends from one gradient into the other as it moves up to the middle of the screen.",
+                "lines": [
+                    "Ideas that move.",
+                    "Colour that follows.",
+                    "Text that stays text."
+                ],
+                "caption": "On this page, both gradients come from the site’s theme, so the demo follows the colour mode too."
+            },
+            "features": {
+                "title": "Small on purpose",
+                "items": {
+                    "themeAware": {
+                        "title": "Theme-aware",
+                        "text": "Pass colours directly, or CSS variables that change with dark and light mode. The gradient is re-read when the mode switches."
+                    },
+                    "tiny": {
+                        "title": "Tiny",
+                        "text": "Around one kilobyte, no dependencies: one passive scroll listener and a little maths per frame, nothing else."
+                    },
+                    "plainText": {
+                        "title": "Still plain text",
+                        "text": "Only the colour changes. Screen readers, search engines and copy & paste see exactly the text you wrote."
+                    }
+                }
+            },
+            "usage": {
+                "title": "Usage",
+                "text": "Wrap the words you want to highlight. The gradient blends while the element travels from 80% to 50% of the viewport height; both points can be changed."
+            },
+            "props": {
+                "title": "Props",
+                "columns": {
+                    "prop": "Prop",
+                    "default": "Default",
+                    "description": "Description"
+                },
+                "required": "required",
+                "items": {
+                    "from": "The gradient at the start: two colours, left to right.",
+                    "to": "The gradient it blends into.",
+                    "start": "Where the blend starts, as a share of the viewport height from the top.",
+                    "end": "Where the blend is complete.",
+                    "as": "The element that is rendered around the text."
+                }
+            },
+            "cta": {
+                "title": "Give it a try",
+                "text": "MIT licensed. Issues, ideas and pull requests are welcome."
+            }
+        }
     },
     "About": {
         "title": "Built with <highlight>Care</highlight>, Designed with <highlightAlt>Intent</highlightAlt>.",

@@ -18,6 +18,9 @@ import { colorModes, staticColorMode, followsSystemColorMode, hasColorModeToggle
 const pages = [
     { name: 'home', path: '/' },
     { name: 'starter', path: '/starter' },
+    { name: 'lab', path: '/lab' },
+    { name: 'lab-landing', path: '/lab/scroll-gradient' },   // example landing page
+    { name: 'lab-markdown', path: '/lab/message-diff' },     // example page from markdown
     { name: 'impressum', path: '/impressum' },
     { name: 'privacy', path: '/privacy' },
     { name: '404', path: '/this-page-does-not-exist' },

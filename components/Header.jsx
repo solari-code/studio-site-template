@@ -60,9 +60,10 @@ const Header = ({ colorMode }) => {
                         </Link>
 
                         {/* Desktop Navigation */}
-                        <nav className="hidden md:flex items-center space-x-8">
+                        {/* Tighter spacing on tablets, so six links in longer languages (German) still fit in one row. */}
+                        <nav className="hidden md:flex items-center md:space-x-5 lg:space-x-8">
                             {navLinks.map((link) => (
-                                <Link key={link.href} href={link.href} className="text-foreground hover:text-secondary transition-colors duration-300">
+                                <Link key={link.href} href={link.href} className="whitespace-nowrap text-foreground hover:text-secondary transition-colors duration-300">
                                     {link.text}
                                 </Link>
                             ))}

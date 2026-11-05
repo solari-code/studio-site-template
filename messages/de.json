@@ -21,6 +21,10 @@
             "title": "Starterpaket — Eine professionelle Landingpage in einer Woche",
             "description": "Eine klare, schnelle Landingpage – gestaltet, gebaut und online in etwa einer Woche. Festpreis 499 €, Domain und Hosting im ersten Jahr inklusive."
         },
+        "Lab": {
+            "title": "Labor — Open Source, Pakete & Experimente",
+            "description": "Nebenprojekte von {name}: Open-Source-Pakete, kleine Tools und Experimente, entstanden abseits der Kundenarbeit."
+        },
         "Impressum": {
             "title": "Impressum",
             "description": "Impressum von {name}: Anbieterangaben, Kontakt und Haftungshinweise."
@@ -39,6 +43,7 @@
         "process": "Ablauf",
         "about": "Über mich",
         "contact": "Kontakt",
+        "lab": "Labor",
         "impressum": "Impressum",
         "privacy": "Datenschutz"
     },
@@ -175,7 +180,110 @@
     "Lab": {
         "title": "Aus dem <highlight>Labor</highlight>",
         "text": "Nebenprojekte und Experimente: Hier probiere ich neue Tools und Ideen aus, bevor sie in Kundenprojekten landen.",
-        "cta": "Zu den Experimenten"
+        "cta": "Zum Labor",
+        "Overview": {
+            "badge": "Nebenprojekte",
+            "title": "Das <highlight>Labor</highlight>",
+            "text": "Open-Source-Pakete, kleine Tools und Experimente, die ich abseits der Kundenarbeit baue: um Ideen auszuprobieren, eigene Probleme zu lösen oder einfach aus Spaß."
+        },
+        "Detail": {
+            "back": "Alle Projekte",
+            "untranslated": "Diese Seite ist noch nicht übersetzt und wird daher auf {language} angezeigt."
+        },
+        "viewProject": "Zum Projekt",
+        "projects": {
+            "scroll-gradient": {
+                "title": "Scroll Gradient",
+                "description": "Eine kleine React-Komponente, die einen Textverlauf in einen anderen übergehen lässt, während der Text ins Bild scrollt. Aus dieser Website herausgelöst.",
+                "tags": [
+                    "Open Source",
+                    "React",
+                    "Animation"
+                ]
+            },
+            "message-diff": {
+                "title": "message-diff",
+                "description": "Ein CLI ohne Konfiguration, das Übersetzungsdateien vergleicht und fehlende, überzählige und abweichende Schlüssel auflistet. Gemacht für next-intl-Projekte.",
+                "tags": [
+                    "CLI",
+                    "Node.js",
+                    "i18n"
+                ]
+            },
+            "type-specimens": {
+                "title": "Type Specimens",
+                "description": "Ein Wochenend-Experiment: generative Poster für variable Schriften, direkt im Browser gezeichnet. Jedes Neuladen ergibt ein neues Poster.",
+                "tags": [
+                    "Experiment",
+                    "Typografie",
+                    "Canvas"
+                ]
+            }
+        },
+        "links": {
+            "github": "GitHub",
+            "npm": "npm",
+            "demo": "Live-Demo"
+        }
+    },
+    "LabLandings": {
+        "scroll-gradient": {
+            "badge": "Open Source · React",
+            "title": "Verläufe, die <highlight>dem Scrollen folgen</highlight>",
+            "subtitle": "Eine kleine React-Komponente, die einen Textverlauf in einen anderen übergehen lässt, während der Text ins Bild scrollt. Keine Abhängigkeiten, keine Einrichtung, nur eine Hülle um deinen Text.",
+            "demoCta": "Live ansehen",
+            "demo": {
+                "title": "Live ansehen",
+                "text": "Langsam scrollen: Jede Zeile geht von einem Verlauf in den anderen über, während sie zur Bildschirmmitte wandert.",
+                "lines": [
+                    "Ideen in Bewegung.",
+                    "Farbe, die folgt.",
+                    "Text bleibt Text."
+                ],
+                "caption": "Auf dieser Seite stammen beide Verläufe aus dem Theme der Website, die Demo folgt also auch dem Farbmodus."
+            },
+            "features": {
+                "title": "Bewusst klein",
+                "items": {
+                    "themeAware": {
+                        "title": "Theme-fähig",
+                        "text": "Farben direkt übergeben oder CSS-Variablen, die sich mit Hell- und Dunkelmodus ändern. Beim Moduswechsel wird der Verlauf neu gelesen."
+                    },
+                    "tiny": {
+                        "title": "Winzig",
+                        "text": "Rund ein Kilobyte, keine Abhängigkeiten: ein passiver Scroll-Listener und etwas Mathematik pro Frame, sonst nichts."
+                    },
+                    "plainText": {
+                        "title": "Bleibt einfacher Text",
+                        "text": "Nur die Farbe ändert sich. Screenreader, Suchmaschinen und Kopieren & Einfügen sehen genau den Text, den du geschrieben hast."
+                    }
+                }
+            },
+            "usage": {
+                "title": "Verwendung",
+                "text": "Einfach die Wörter umschließen, die hervorgehoben werden sollen. Der Übergang läuft, während das Element von 80 % auf 50 % der Fensterhöhe wandert; beide Punkte lassen sich ändern."
+            },
+            "props": {
+                "title": "Props",
+                "columns": {
+                    "prop": "Prop",
+                    "default": "Standard",
+                    "description": "Beschreibung"
+                },
+                "required": "erforderlich",
+                "items": {
+                    "from": "Der Verlauf am Anfang: zwei Farben, von links nach rechts.",
+                    "to": "Der Verlauf, in den übergeblendet wird.",
+                    "start": "Wo der Übergang beginnt, als Anteil der Fensterhöhe von oben.",
+                    "end": "Wo der Übergang abgeschlossen ist.",
+                    "as": "Das Element, das um den Text gerendert wird."
+                }
+            },
+            "cta": {
+                "title": "Probier es aus",
+                "text": "MIT-lizenziert. Issues, Ideen und Pull-Requests sind willkommen."
+            }
+        }
     },
     "About": {
         "title": "Mit <highlight>Sorgfalt</highlight> gebaut, mit <highlightAlt>Absicht</highlightAlt> gestaltet.",

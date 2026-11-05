@@ -1,13 +1,16 @@
 /**
  * Step "Languages": default language and additional languages -> i18n/routing.js, plus a
  * messages/<code>.json for every new language (a copy of the default language's file, to be
- * translated by hand). A removed language keeps its messages file unless you say otherwise.
+ * translated by hand). A removed language keeps its messages file unless you say otherwise, and
+ * likewise its lab pages' markdown (content/lab/<id>/<code>.md). New languages get no markdown
+ * copies: until a page is translated, it shows the default language's text.
  */
 import { text, select, multiselect, confirm, log } from '../prompts.mjs';
 import * as v from '../validate.mjs';
 
 const FILE = 'i18n/routing.js';
 const messagesFile = (code) => `messages/${code}.json`;
+const labFiles = (code) => `content/lab/*/${code}.md`;
 
 // "Français" for 'fr': the language's name in the language itself, as the switcher shows it.
 export function suggestLocaleName(code) {
@@ -84,13 +87,21 @@ const step = {
 
         const removed = locales.filter((code) => !newLocales.includes(code));
         const deleteFiles = [];
+        const deleteContent = [];
         for (const code of removed) {
-            if (!state.messages.includes(code)) continue;
-            const remove = await confirm({ message: `"${code}" is removed. Delete ${messagesFile(code)} too? (No keeps the texts for later)`, initialValue: false });
-            if (remove) deleteFiles.push(code);
+            if (state.messages.includes(code)) {
+                const remove = await confirm({ message: `"${code}" is removed. Delete ${messagesFile(code)} too? (No keeps the texts for later)`, initialValue: false });
+                if (remove) deleteFiles.push(code);
+            }
+            const content = state.labContent?.[code] ?? [];
+            if (content.length) {
+                const files = `${content.length} file${content.length > 1 ? 's' : ''}`;
+                const remove = await confirm({ message: `Delete its lab page texts too (${labFiles(code)}, ${files})? (No keeps them for later)`, initialValue: false });
+                if (remove) deleteContent.push(code);
+            }
         }
 
-        return { locales: newLocales, defaultLocale: newDefault, localeNames: names, deleteFiles };
+        return { locales: newLocales, defaultLocale: newDefault, localeNames: names, deleteFiles, deleteContent };
     },
 
     changes(state, a) {
@@ -105,6 +116,7 @@ const step = {
             changes.push({ file: messagesFile(code), label: 'new file', from: null, to: `copy of ${messagesFile(this.copySource(state))}, to be translated` });
         }
         for (const code of this.filesToDelete(state, a)) changes.push({ file: messagesFile(code), label: 'deleted', from: null, to: null });
+        for (const file of this.contentToDelete(state, a)) changes.push({ file, label: 'deleted', from: null, to: null });
         return changes;
     },
 
@@ -115,6 +127,7 @@ const step = {
         file.rewriteObject('localeNames', a.localeNames);
         for (const code of this.newMessageFiles(state, a)) workspace.copy(messagesFile(this.copySource(state)), messagesFile(code));
         for (const code of this.filesToDelete(state, a)) workspace.delete(messagesFile(code));
+        for (const file of this.contentToDelete(state, a)) workspace.delete(file);
     },
 
     todos(state, a) {
@@ -124,6 +137,14 @@ const step = {
         }
         for (const code of state.routing.locales.filter((c) => !a.locales.includes(c) && !a.deleteFiles.includes(c) && state.messages.includes(c))) {
             todos.push(`${messagesFile(code)} is kept but no longer used; delete it or add "${code}" back in i18n/routing.js.`);
+        }
+        const content = state.labContent ?? {};
+        for (const code of state.routing.locales.filter((c) => !a.locales.includes(c) && !(a.deleteContent ?? []).includes(c) && content[c]?.length)) {
+            todos.push(`The lab page texts ${labFiles(code)} are kept but no longer used; delete them or add "${code}" back in i18n/routing.js.`);
+        }
+        const translatable = (content[state.routing.defaultLocale] ?? []).length > 0;
+        for (const code of a.locales.filter((c) => !state.routing.locales.includes(c) && translatable)) {
+            todos.push(`Lab pages: translate content/lab/<id>/${state.routing.defaultLocale}.md into content/lab/<id>/${code}.md where you want them (until then the ${state.routing.defaultLocale} text is shown; \`npm run check:messages\` lists them).`);
         }
         return todos;
     },
@@ -136,6 +157,11 @@ const step = {
     // Message files of removed languages that should go (only those that exist and are not in use).
     filesToDelete(state, a) {
         return a.deleteFiles.filter((code) => state.messages.includes(code) && !a.locales.includes(code));
+    },
+
+    // Lab markdown files of removed languages that should go (never those of a language still in use).
+    contentToDelete(state, a) {
+        return (a.deleteContent ?? []).filter((code) => !a.locales.includes(code)).flatMap((code) => state.labContent?.[code] ?? []);
     },
 
     // New files are copied from the current default language (the most complete file), or en.json.

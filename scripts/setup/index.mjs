@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Setup assistant: asks for the brand basics, theme, languages and pages of a new site and writes
+ * Setup assistant: asks for the brand basics, theme, languages, lab and pages of a new site and writes
  * the answers into config/, i18n/routing.js and messages/. The config files are edited in place,
  * so their comments stay. Re-running it shows the current values as defaults.
  *
@@ -20,16 +20,19 @@ import { manualTodos } from './todo.mjs';
 import brand from './steps/brand.mjs';
 import theme from './steps/theme.mjs';
 import languages from './steps/languages.mjs';
+import lab from './steps/lab.mjs';
 import pages from './steps/pages.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const run = promisify(execFile);
 
-// The steps in the order they are asked.
+// The steps in the order they are asked (and written). `lab` comes before `pages`: both edit
+// config/pages.js by the sections' original positions, and `pages` reorders them at the end.
 const steps = [
     brand,
     theme,
     languages,
+    lab,
     pages,
 ];
 

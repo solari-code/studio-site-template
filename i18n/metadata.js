@@ -39,17 +39,21 @@ export function getOgAlternateLocales(locale) {
 /**
  * Metadata for a page from config/pages.js: title and description from its `metadata`
  * namespace (`{name}` is the site name), canonical + hreflang links, Open Graph and Twitter card.
- * The layout's title template appends " | <site name>". The site-wide preview image from
- * config/site.js is used unless the route has its own opengraph-image file (like /starter).
+ * The layout's title template appends " | <site name>".
+ *
+ * Anything shaped like a page works too (`{ path, metadata, previewImage }`), e.g. a lab project page
+ * with `metadata: 'Lab.projects.<id>'`. The link-preview image is chosen by `previewImage`:
+ *   undefined            the site-wide image from config/site.js
+ *   false                none here: the route has its own opengraph-image file (like /starter)
+ *   '/images/x.png'      this image (path in public/ or a remote URL)
+ *   { src, width, height }  the same, with its size
  */
 export async function pageMetadata(locale, page) {
     const t = await getTranslations({ locale, namespace: page.metadata });
     const name = siteConfig.name;
     const title = t('title', { name });
     const description = t('description', { name });
-    // `previewImage: false` on the page leaves the image to the route's own opengraph-image file.
-    const { src, width, height } = siteConfig.assets.ogImage;
-    const ogImage = page.previewImage === false ? undefined : { url: src, width, height };
+    const ogImage = previewImage(page.previewImage);
 
     return {
         title,
@@ -72,4 +76,11 @@ export async function pageMetadata(locale, page) {
             ...(ogImage && { images: [ogImage.url] }),
         },
     };
+}
+
+// The Open Graph image for a page's `previewImage` option (see pageMetadata), or undefined for none.
+function previewImage(option) {
+    if (option === false) return undefined;
+    const { src, width, height } = typeof option === 'string' ? { src: option } : (option ?? siteConfig.assets.ogImage);
+    return { url: src, ...(width && height && { width, height }) };
 }

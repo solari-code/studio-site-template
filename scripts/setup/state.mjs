@@ -32,6 +32,21 @@ export async function loadFonts(root) {
     return loaded;
 }
 
+// Markdown of the lab's project pages by language, from content/lab/<id>/<language>.md:
+// { en: ['content/lab/message-diff/en.md'], de: [...] }. Empty when there is no content/lab/.
+export async function loadLabContent(root) {
+    const dir = path.join(root, 'content', 'lab');
+    const byLocale = {};
+    const projects = await readdir(dir, { withFileTypes: true }).then((entries) => entries.filter((e) => e.isDirectory()).map((e) => e.name), () => []);
+    for (const id of projects.sort()) {
+        for (const file of (await readdir(path.join(dir, id))).filter((f) => f.endsWith('.md')).sort()) {
+            const locale = file.replace(/\.md$/, '');
+            (byLocale[locale] ??= []).push(`content/lab/${id}/${file}`);
+        }
+    }
+    return byLocale;
+}
+
 export async function loadState(root) {
     const { siteConfig } = await load(root, 'config/site.js');
     const { locales, defaultLocale, localeNames } = await load(root, 'i18n/routing.js');
@@ -55,5 +70,6 @@ export async function loadState(root) {
         theme,
         fonts: { body: fontId('body'), heading: fontId('heading'), loaded: loadedFonts }, // ids from themes.mjs, null = not a bundled font
         pages,
+        labContent: await loadLabContent(root), // lab project pages' markdown, by language
     };
 }

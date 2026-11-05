@@ -1,12 +1,16 @@
 /**
  * Step "Pages & sections": which pages are on, which sections each page shows and in what order,
  * what is in the navigation, and the few section options that are data rather than text
- * (hero background and colour mode, CTA target, lab URL, about image, pricing card mode)
+ * (hero background and colour mode, CTA target, about image, pricing card mode)
  * -> config/pages.js. Sections are switched off with `enabled: false`, never deleted, so their
  * entries (and comments) stay for later.
+ *
+ * The lab is switched by its own step (steps/lab.mjs): the lab page isn't offered here, and lab
+ * sections keep their on/off state (they can still be reordered and put into the navigation).
  */
 import { text, select, multiselect, confirm, log } from '../prompts.mjs';
 import * as v from '../validate.mjs';
+import { LAB_PAGE, isLabSection } from './lab.mjs';
 
 const FILE = 'config/pages.js';
 
@@ -19,6 +23,7 @@ const NAMESPACES = {
     hero: 'Hero', intro: 'Intro', services: 'Services', work: 'Work', process: 'Process', lab: 'Lab', about: 'About', contact: 'Contact',
     'starter-hero': 'Starter.Hero', 'starter-who-is-this-for': 'Starter.WhoIsThisFor', 'starter-pricing': 'Starter.Pricing',
     'starter-roadmap': 'Starter.Roadmap', 'starter-faq': 'Starter.Faq', 'starter-contact': 'Starter.Contact', 'starter-tech-specs': 'Starter.TechSpecs',
+    'lab-projects': 'Lab.Overview',
 };
 
 // Suggested navigation text for a section. Navigation texts must be short, so it is the keyword of the
@@ -38,6 +43,13 @@ export function suggestNavText(state, section) {
     return id.charAt(0).toUpperCase() + id.slice(1).replace(/-/g, ' ');
 }
 
+// A section's `nav` entry from the answers. Options the assistant doesn't ask about (e.g. `order`)
+// are kept from the current entry, so re-running it doesn't undo them.
+export function navEntry(label, header, footer, current = null) {
+    const { label: _label, header: _header, footer: _footer, ...kept } = current ?? {};
+    return { label, ...(header ? {} : { header: false }), ...(footer ? {} : { footer: false }), ...kept };
+}
+
 // Navigation texts have to fit the header; "Privacy Policy" (14) is the longest in the template.
 const NAV_TEXT_MAX = 24;
 const navText = v.all(v.required, (value) => (value.trim().length > NAV_TEXT_MAX ? `Keep navigation texts short (max. ${NAV_TEXT_MAX} characters).` : undefined));
@@ -45,10 +57,15 @@ const navText = v.all(v.required, (value) => (value.trim().length > NAV_TEXT_MAX
 // Section options the assistant offers, by type. Everything else on a section entry stays as it is.
 const OPTIONS = {
     hero: ['background', 'overlay', 'colorMode', 'ctaHref'],
-    lab: ['url'],
     about: ['image'],
     'starter-pricing': ['cardColorMode'],
 };
+
+// Pages this step asks about: all but the lab page, which the lab step switches.
+export const pagesToAsk = (pages) => Object.keys(pages).filter((key) => key !== LAB_PAGE);
+
+// Positions of the sections that can be switched on/off here: all but lab sections (lab step).
+export const switchableSections = (sections) => sections.map((_, i) => i).filter((i) => !isLabSection(sections[i]));
 
 const step = {
     id: 'pages',
@@ -58,7 +75,7 @@ const step = {
     async ask(state) {
         log.step('Pages & sections');
         const { pages } = state;
-        const keys = Object.keys(pages);
+        const keys = pagesToAsk(pages);
 
         // 1. Pages
         const describePage = (key) => `${key} (${pages[key].path})`;
@@ -96,8 +113,9 @@ const step = {
             if (!answer.sections) continue;
             const before = page.sections;
             const names = (list) => list.map((s) => sectionId(s)).join(', ');
-            const onBefore = before.filter(isOn);
-            const onAfter = answer.sections.filter((s) => s.enabled).map((s) => before[s.index]);
+            // Lab sections are left out: their on/off state belongs to the lab step.
+            const onBefore = before.filter((s) => isOn(s) && !isLabSection(s));
+            const onAfter = answer.sections.filter((s) => s.enabled).map((s) => before[s.index]).filter((s) => !isLabSection(s));
             add(`${key}: sections`, names(onBefore), names(onAfter));
             for (const s of answer.sections) {
                 const section = before[s.index];
@@ -174,12 +192,15 @@ async function askSections(state, key, page, navTexts) {
     const id = (i) => sectionId(sections[i]);
     log.message(`${key} (${page.path}): ${sections.map((s, i) => `${id(i)}${isOn(s) ? '' : ' (off)'}`).join(', ')}`);
 
-    const enabled = await multiselect({
-        message: `Sections on ${page.path} (untick to switch off; the entry stays in the config)`,
-        options: sections.map((s, i) => ({ value: i, label: id(i), hint: s.type !== id(i) ? s.type : undefined })),
-        initialValues: sections.map((s, i) => i).filter((i) => isOn(sections[i])),
+    const switchable = switchableSections(sections);
+    const chosen = switchable.length === 0 ? [] : await multiselect({
+        message: `Sections on ${page.path} (untick to switch off; the entry stays in the config${switchable.length < sections.length ? '; the lab section is switched in the Lab step' : ''})`,
+        options: switchable.map((i) => ({ value: i, label: id(i), hint: sections[i].type !== id(i) ? sections[i].type : undefined })),
+        initialValues: switchable.filter((i) => isOn(sections[i])),
         required: true,
     });
+    // Lab sections keep their state; the ones that are on take part in ordering and navigation.
+    const enabled = [...chosen, ...sections.map((_, i) => i).filter((i) => !switchable.includes(i) && isOn(sections[i]))];
 
     // Order
     let order = sections.map((_, i) => i);
@@ -236,7 +257,7 @@ async function askSections(state, key, page, navTexts) {
                     validate: navText,
                 });
             }
-            navs[i] = { label, ...(header ? {} : { header: false }), ...(footer ? {} : { footer: false }) };
+            navs[i] = navEntry(label, header, footer, sections[i].nav);
         }
     }
 
@@ -279,9 +300,6 @@ async function askOptions(state, section, sectionIds) {
             }));
             break;
         }
-        case 'lab':
-            keep('url', await text({ message: 'Link target of the lab section', initialValue: section.url, validate: v.absoluteUrl }));
-            break;
         case 'about':
             keep('image', await text({ message: 'Portrait image (path under public/)', initialValue: section.image, validate: v.publicPath(state.root) }));
             break;

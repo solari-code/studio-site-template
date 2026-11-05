@@ -6,6 +6,9 @@
  *   namespaces exist in the messages, section data (items, projects, steps, …) matches the
  *   messages, icons are registered, referenced images/videos exist. Sections and pages that
  *   are switched off (`enabled: false`) are listed but their data is not checked.
+ * - config/lab.js: project ids are unique and usable as URLs, texts exist in the messages, images
+ *   exist, links use known types, landing pages are registered, markdown pages have their file in the
+ *   default language; the homepage's lab section isn't on while the lab page is off
  * - config/site.js: social icons, favicons, preview image, form definitions
  * - config/theme.js: colour modes, shades, gradients and the scroll gradient reference existing tokens,
  *   font roles reference families loaded in config/fonts.js
@@ -19,6 +22,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const { pages, sectionId, isEnabled } = await import(path.join(root, 'config', 'pages.js'));
+const { labProjects, labLinkTypes } = await import(path.join(root, 'config', 'lab.js'));
 const { siteConfig } = await import(path.join(root, 'config', 'site.js'));
 const { theme, colors, colorModes, resolveColors } = await import(path.join(root, 'config', 'theme.js'));
 const { defaultLocale } = await import(path.join(root, 'i18n', 'routing.js'));
@@ -32,13 +36,14 @@ const registeredKeys = async (file, objectName) => {
 };
 const sectionTypes = await registeredKeys('components/sections/index.jsx', 'sectionComponents');
 const iconNames = await registeredKeys('config/icons.js', 'icons');
+const landingIds = await registeredKeys('components/lab/landings/index.jsx', 'landingComponents');
 
 // Default messages namespace per section type (mirrors the components' defaults).
 const defaultNamespaces = {
     hero: 'Hero', intro: 'Intro', services: 'Services', work: 'Work', process: 'Process', lab: 'Lab',
     about: 'About', contact: 'Contact', 'starter-hero': 'Starter.Hero', 'starter-who-is-this-for': 'Starter.WhoIsThisFor',
     'starter-pricing': 'Starter.Pricing', 'starter-roadmap': 'Starter.Roadmap', 'starter-faq': 'Starter.Faq',
-    'starter-contact': 'Starter.Contact', 'starter-tech-specs': 'Starter.TechSpecs',
+    'starter-contact': 'Starter.Contact', 'starter-tech-specs': 'Starter.TechSpecs', 'lab-projects': 'Lab.Overview',
 };
 
 let errors = 0;
@@ -66,6 +71,12 @@ function checkMessageKey(keyPath, where, { required = true } = {}) {
         return false;
     }
     return true;
+}
+
+// A `nav` entry of a page or section: its text exists, `order` (if set) is a number.
+function checkNav(nav, where) {
+    checkMessageKey(`Nav.${nav.label}`, where);
+    if (nav.order !== undefined && !Number.isFinite(nav.order)) error(`${where}: order "${nav.order}" must be a number`);
 }
 
 // Items keyed by id need a matching entry in the messages, e.g. Services.items.<id>
@@ -114,7 +125,11 @@ const sectionChecks = {
         checkIds(s.steps, ns, 'steps', where);
     },
     about: async (s, ns, where) => { await checkFile(s.image, `${where} image`); },
-    lab: async (s, ns, where) => { if (!s.url) error(`${where}: "url" is required`); },
+    lab: async (s, ns, where) => {
+        checkMessageKey(`${ns}.title`, where);
+        checkMessageKey(`${ns}.cta`, where);
+        if (s.limit !== undefined && !(Number.isInteger(s.limit) && s.limit > 0)) error(`${where}: limit "${s.limit}" must be a positive whole number`);
+    },
     'starter-who-is-this-for': async (s, ns, where) => {
         if (!Array.isArray(s.criteria)) return error(`${where}: "criteria" is required`);
         checkIds(s.criteria.map((c) => c.id), ns, 'criteria', where);
@@ -153,7 +168,7 @@ for (const [key, page] of Object.entries(pages)) {
     } else {
         warn(`${where}: no "metadata" namespace, the page has no title/description of its own`);
     }
-    if (page.nav) checkMessageKey(`Nav.${page.nav.label}`, `${where} nav`);
+    if (page.nav) checkNav(page.nav, `${where} nav`);
 
     if (page.type === 'legal') {
         if (!page.namespace) { error(`${where}: legal pages need a "namespace"`); continue; }
@@ -178,11 +193,82 @@ for (const [key, page] of Object.entries(pages)) {
         if (ids.has(id)) error(`${sWhere}: id "${id}" is used twice on this page`);
         ids.add(id);
         if (!isEnabled(section)) continue; // switched off: only the type and the id are checked
-        if (section.nav) checkMessageKey(`Nav.${section.nav.label}`, `${sWhere} nav`);
+        if (section.nav) checkNav(section.nav, `${sWhere} nav`);
 
         const namespace = section.namespace ?? defaultNamespaces[section.type];
         if (namespace && getMessage(namespace) === undefined) error(`${sWhere}: messages namespace "${namespace}" does not exist`);
         if (sectionChecks[section.type]) await sectionChecks[section.type](section, namespace, sWhere);
+    }
+}
+
+console.log('\nChecking config/lab.js\n');
+
+// The lab page: its path is fixed by the route folder, and the homepage section links to it.
+const labPage = pages.lab;
+const labOn = Boolean(labPage) && isEnabled(labPage);
+if (!labPage) {
+    error('pages.lab is missing in config/pages.js (the lab page, its projects and the lab section need it)');
+} else if (labPage.path !== '/lab') {
+    error(`pages.lab: path must be '/lab' (it is fixed by the route folder app/[locale]/lab), not '${labPage.path}'`);
+}
+for (const [key, page] of Object.entries(pages)) {
+    for (const section of (page.sections ?? []).filter((s) => s.type === 'lab' && isEnabled(s))) {
+        if (labPage && !labOn) error(`page "${key}" section "${sectionId(section)}": the lab section is on but the lab page (pages.lab) is off, so the section is hidden; switch both on or both off (npm run setup, step "Lab")`);
+    }
+}
+
+if (!labOn) {
+    console.log('  ℹ the lab page is disabled; its projects are not checked');
+} else {
+    // Link types: each needs a registered icon and a text
+    for (const [type, { icon }] of Object.entries(labLinkTypes)) {
+        checkIcon(icon, `labLinkTypes.${type}`);
+        checkMessageKey(`Lab.links.${type}`, `labLinkTypes.${type}`);
+    }
+
+    const seenIds = new Set();
+    for (const [index, project] of labProjects.entries()) {
+        const id = project.id;
+        const where = `lab project "${id ?? `#${index + 1}`}"`;
+        if (typeof id !== 'string' || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(id)) {
+            error(`${where}: id must be lowercase letters, digits and single hyphens (it is the URL /lab/<id>)`);
+            continue;
+        }
+        if (seenIds.has(id)) error(`${where}: id is used twice`);
+        seenIds.add(id);
+        if (!isEnabled(project)) { console.log(`  ℹ ${where} is disabled`); continue; }
+
+        checkMessageKey(`Lab.projects.${id}.title`, where);
+        checkMessageKey(`Lab.projects.${id}.description`, where);
+        const tags = getMessage(`Lab.projects.${id}.tags`);
+        if (tags !== undefined && !Array.isArray(tags)) error(`${where}: Lab.projects.${id}.tags must be a list`);
+        if (project.image) await checkFile(project.image, `${where} image`);
+
+        for (const [type, url] of Object.entries(project.links ?? {})) {
+            if (!labLinkTypes[type]) error(`${where}: unknown link type "${type}" (available: ${Object.keys(labLinkTypes).join(', ')}; add one in labLinkTypes)`);
+            if (!/^https?:\/\//.test(url ?? '')) error(`${where}: link "${type}" must be an absolute URL (https://…)`);
+        }
+
+        if (project.detail === 'landing') {
+            if (!landingIds.includes(id)) error(`${where}: detail 'landing', but no landing page is registered under "${id}" in components/lab/landings/index.jsx`);
+        } else if (project.detail === 'markdown') {
+            const file = path.join('content', 'lab', id, `${defaultLocale}.md`);
+            if (!(await access(path.join(root, file)).then(() => true, () => false))) error(`${where}: detail 'markdown', but ${file} does not exist`);
+        } else if (project.detail !== undefined) {
+            error(`${where}: detail "${project.detail}" must be 'landing', 'markdown' or left out (card only)`);
+        }
+    }
+
+    // Landing pages registered for no project with detail 'landing'
+    const landingProjects = labProjects.filter((p) => p.detail === 'landing').map((p) => p.id);
+    for (const landing of landingIds.filter((l) => !landingProjects.includes(l))) {
+        warn(`components/lab/landings/index.jsx: landing "${landing}" belongs to no project with detail: 'landing' in config/lab.js; it is never shown`);
+    }
+
+    // The homepage teaser shows the featured projects
+    const teaserOn = Object.values(pages).some((page) => isEnabled(page) && (page.sections ?? []).some((s) => s.type === 'lab' && isEnabled(s)));
+    if (teaserOn && !labProjects.some((p) => isEnabled(p) && p.featured)) {
+        warn('no lab project is `featured`: the homepage\'s lab section shows only its text and button');
     }
 }
 

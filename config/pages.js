@@ -3,8 +3,8 @@
 // Page:
 //   path       URL of the page (without language prefix)
 //   metadata   messages namespace with the page's `title` and `description` (SEO, link previews)
-//   previewImage  set to false when the route has its own opengraph-image file; otherwise the
-//              site-wide image from config/site.js is used for link previews
+//   previewImage  link-preview image: the site-wide one from config/site.js unless set; false when the
+//              route has its own opengraph-image file, or an image path to use instead
 //   enabled    set to false to switch a page off (404, not in the sitemap or navigation); default true
 //   sections   ordered list of sections (see below); legal pages use `type: 'legal'` + `namespace` instead
 //   nav        link to the page itself in the navigation (same options as for sections)
@@ -20,6 +20,8 @@
 //                label   key in the `Nav` namespace of the messages
 //                header  show in the header (default true)
 //                footer  show in the footer: true (default, main link row), false, or 'legal' (small print row)
+//                order   position in the navigation: entries follow the page and section order above,
+//                        then are sorted by this number (default 0), so `order: 1` puts an entry after all others
 //   ...        any other keys are passed to the section component as props
 
 import { hasColorModeToggle } from './theme.js';
@@ -70,7 +72,8 @@ export const pages = {
                     { id: 'yoga', image: '/images/work/project-4.png', liveUrl: 'https://example.com/' },
                 ],
             },
-            { type: 'lab', url: 'https://example.com', enabled: false },
+            // Teaser for /lab: the projects marked `featured` in config/lab.js. Hidden while the lab page is off.
+            { type: 'lab' },
             {
                 type: 'process',
                 nav: { label: 'process' },
@@ -82,7 +85,7 @@ export const pages = {
                 nav: { label: 'about' },
                 image: '/images/about/portrait-placeholder.jpg',
             },
-            { type: 'contact', nav: { label: 'contact', footer: false } },
+            { type: 'contact', nav: { label: 'contact', footer: false, order: 1 } }, // order: 1 keeps Contact last, after page links like Lab
         ],
     },
 
@@ -126,6 +129,16 @@ export const pages = {
         ],
     },
 
+    lab: {
+        path: '/lab', // fixed by the route folder app/[locale]/lab; project pages live below it (/lab/<id>)
+        metadata: 'Metadata.Lab',
+        nav: { label: 'lab' },
+        // The projects, their links and pages are set up in config/lab.js.
+        sections: [
+            { type: 'lab-projects' },
+        ],
+    },
+
     impressum: {
         path: '/impressum',
         metadata: 'Metadata.Impressum',
@@ -162,12 +175,13 @@ export const enabledSections = (page) => (page.sections ?? []).filter(isEnabled)
 export const sectionId = (section) => section.id ?? section.type;
 
 /**
- * All navigation entries in page order: pages with `nav`, then their sections with `nav`.
- *   [{ href: '/#services', label: 'services', header: true, footer: true }, ...]
+ * All navigation entries in page order: pages with `nav`, then their sections with `nav`; an entry
+ * with `nav.order` is moved by it (sorted by order, default 0; equal orders keep the config order).
+ *   [{ href: '/#services', label: 'services', header: true, footer: true, order: 0 }, ...]
  */
 export function navItems() {
     const items = [];
-    const add = (href, nav) => items.push({ href, label: nav.label, header: nav.header !== false, footer: nav.footer ?? true });
+    const add = (href, nav) => items.push({ href, label: nav.label, header: nav.header !== false, footer: nav.footer ?? true, order: nav.order ?? 0 });
 
     for (const page of enabledPages()) {
         if (page.nav) add(page.path, page.nav);
@@ -175,7 +189,7 @@ export function navItems() {
             if (section.nav) add(`${page.path}#${sectionId(section)}`, section.nav);
         }
     }
-    return items;
+    return items.sort((a, b) => a.order - b.order); // stable: equal orders stay in config order
 }
 
 export const headerNav = () => navItems().filter((item) => item.header);

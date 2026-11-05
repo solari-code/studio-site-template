@@ -19,9 +19,9 @@ const Footer = () => {
                     <Logo className="h-16 w-auto text-contrast" />
                 </Link>
                 {/* Generated from the `nav` entries in config/pages.js (footer: true) */}
-                <div className="flex justify-center space-x-6 mb-8">
+                <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-8">
                     {footerNav().map((item) => (
-                        <Link key={item.href} href={item.href} className="text-muted hover:text-contrast transition-colors">{t(item.label)}</Link>
+                        <Link key={item.href} href={item.href} className="whitespace-nowrap text-muted hover:text-contrast transition-colors">{t(item.label)}</Link>
                     ))}
                 </div>
                 {/* Social links from config/site.js; icons from config/icons.js */}
